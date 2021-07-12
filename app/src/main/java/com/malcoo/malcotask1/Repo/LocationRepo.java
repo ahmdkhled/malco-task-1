@@ -28,7 +28,7 @@ public class LocationRepo {
 
     @SuppressLint("MissingPermission")
     public LatLng getLocation(){
-
+        // here used passive provider not FusedLocationProvider to avoid background location processing
         LocationManager locationManager= (LocationManager) context.getSystemService(LOCATION_SERVICE);
         Location location=locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
         //Log.d("TAGGG", "getLocation: "+location.getLatitude()+"  --  "+location.getLongitude());
@@ -36,5 +36,14 @@ public class LocationRepo {
             return new LatLng(location.getLatitude(),location.getLongitude());
         }
         return null;
+    }
+
+    public Boolean isLocationEnabled() {
+        LocationManager locationManager =
+                (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                && locationManager.isProviderEnabled(
+                LocationManager.NETWORK_PROVIDER
+        );
     }
 }
