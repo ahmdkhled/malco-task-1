@@ -18,18 +18,24 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.malcoo.malcotask1.Model.Result;
 import com.malcoo.malcotask1.R;
+import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.ViewModels.MapsActivityVM;
+import com.tapadoo.alerter.Alerter;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,LocationBottomSheet.OnActivateLocationClickedListener {
 
     private GoogleMap mMap;
     private MapsActivityVM mapsActivityVM;
     ActivityResultLauncher<Intent> launcher;
+    // random warehouse coordinates
+    MapUtil mapUtil=new MapUtil();
+    LatLng warehouse=new LatLng(30.0742382,31.2856253);
 
 
     @Override
@@ -48,7 +54,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onMapReady( GoogleMap googleMap) { mMap = googleMap; }
+    public void onMapReady( GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.addMarker(new MarkerOptions().title("ware house").position(warehouse));
+        mapUtil.drawCircle(warehouse,mMap);
+    }
 
     void checkLocation(){
         launcher = registerForActivityResult(
@@ -56,7 +66,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 result -> {
                     Log.d("TAG", "checkLocation: ");
                         getCurrentLocation();
-
                 });
     }
 
@@ -79,15 +88,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         mapsActivityVM.getLocation().observe(this, latLngResult -> {
-            LatLng cordinates=latLngResult.data;
-            if (cordinates!=null){
-                mMap.addMarker(new MarkerOptions().position(cordinates));
-                mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(cordinates, 10f));
+            LatLng cordinates=latLngResult.getData();
+            if (latLngResult.isSuccess()&&cordinates!=null){
+                mMap.addMarker(new MarkerOptions().position(cordinates)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(cordinates, 12f));
+                boolean inCircle=mapUtil.isInCircle(cordinates);
+                String message=mapUtil.getMessage(inCircle);
+                Alerter.create(this).setTitle("your status")
+                        .setText(message).
+                        setBackgroundColorRes(mapUtil.getColor(inCircle)).show();
+
             }else {
                 Log.d("TAG", "checkLocation: no location ");
+                Toast.makeText(this, "failed to get Location", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     @Override

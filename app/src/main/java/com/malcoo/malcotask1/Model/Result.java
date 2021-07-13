@@ -2,7 +2,7 @@ package com.malcoo.malcotask1.Model;
 
 public class Result<T> {
     Boolean isLoading;
-    public T data;
+    T data;
     String error;
     boolean success;
 
@@ -24,4 +24,19 @@ public class Result<T> {
         return new Result<T>(false,null,error,false);
     }
 
+    public Boolean getLoading() {
+        return isLoading;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
 }
