@@ -4,8 +4,26 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.CancellationSignal;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.CancellationToken;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
+import com.google.android.gms.tasks.Task;
+import com.malcoo.malcotask1.Model.Result;
+
+import java.util.concurrent.Executor;
+import java.util.function.Consumer;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -14,6 +32,7 @@ public class LocationRepo {
 
     Context context;
     private static LocationRepo locationRepo;
+    MutableLiveData<Result<LatLng>> locationData;
 
     private LocationRepo(Context context) {
         this.context = context;
@@ -27,15 +46,29 @@ public class LocationRepo {
     }
 
     @SuppressLint("MissingPermission")
-    public LatLng getLocation(){
-        // here used passive provider not FusedLocationProvider to avoid background location processing
-        LocationManager locationManager= (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        Location location=locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-        //Log.d("TAGGG", "getLocation: "+location.getLatitude()+"  --  "+location.getLongitude());
-        if (location!=null){
-            return new LatLng(location.getLatitude(),location.getLongitude());
-        }
-        return null;
+    public MutableLiveData<Result<LatLng>> getLocation(){
+        locationData=new MutableLiveData<>();
+
+
+        LocationRequest mLocationRequest = LocationRequest.create();
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationCallback mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                Location location =locationResult.getLastLocation();
+                Log.d("TAG", "getLocation: "+location);
+                if (location!=null){
+                    LatLng cordinates= new LatLng(location.getLatitude(),location.getLongitude());
+                    locationData.setValue(Result.SUCCESS(cordinates));
+                }
+
+
+
+            }
+        };
+        LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+        return locationData;
     }
 
     public Boolean isLocationEnabled() {
