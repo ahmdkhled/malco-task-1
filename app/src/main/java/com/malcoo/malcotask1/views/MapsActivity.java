@@ -1,5 +1,7 @@
 package com.malcoo.malcotask1.views;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -33,9 +35,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private MapsActivityVM mapsActivityVM;
     ActivityResultLauncher<Intent> launcher;
-    // random warehouse coordinates
     MapUtil mapUtil=new MapUtil();
-    LatLng warehouse=new LatLng(30.0742382,31.2856253);
+    PermissionUtil permissionUtil;
+    // random warehouse coordinates outside circle
+    //LatLng warehouse=new LatLng(30.0742382,31.2856253);
+
+    // random warehouse coordinates inside circle
+    LatLng warehouse=new LatLng(30.073859,31.3012522);
 
 
     @Override
@@ -43,7 +49,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mapsActivityVM=new ViewModelProvider(this).get(MapsActivityVM.class);
-        PermissionUtil permissionUtil=new PermissionUtil();
+        permissionUtil=new PermissionUtil();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -69,6 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -76,7 +83,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentLocation();
             }else{
-                Toast.makeText(this, "accessing location is mandatory please accept permission", Toast.LENGTH_SHORT).show();
+                permissionUtil.showDialog(this,this);
             }
         }
     }
