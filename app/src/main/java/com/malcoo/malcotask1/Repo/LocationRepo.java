@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -32,7 +33,7 @@ public class LocationRepo {
 
     Context context;
     private static LocationRepo locationRepo;
-    MutableLiveData<Result<LatLng>> locationData;
+    MutableLiveData<Result<Location>> locationData;
 
     private LocationRepo(Context context) {
         this.context = context;
@@ -45,30 +46,31 @@ public class LocationRepo {
         return locationRepo;
     }
 
+
+
     @SuppressLint("MissingPermission")
-    public MutableLiveData<Result<LatLng>> getLocation(){
+    public MutableLiveData<Result<Location>>  trackLocation(){
         locationData=new MutableLiveData<>();
 
+        LocationRequest locationRequest=LocationRequest.create();
+        locationRequest.setInterval(5000); // 5 seconds just for testing
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-        LocationRequest mLocationRequest = LocationRequest.create();
-
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        LocationCallback mLocationCallback = new LocationCallback() {
+        LocationCallback locationCallback=new LocationCallback(){
             @Override
-            public void onLocationResult(LocationResult locationResult) {
-                Location location =locationResult.getLastLocation();
-                Log.d("TAG", "getLocation: "+location);
-                if (location!=null){
-                    LatLng cordinates= new LatLng(location.getLatitude(),location.getLongitude());
-                    locationData.setValue(Result.SUCCESS(cordinates));
-                }
-
-
-
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                locationData.setValue(Result.SUCCESS(locationResult.getLastLocation()));
+                Log.d("trackLocation", "onLocationResult: "+locationResult.getLastLocation());
             }
+
+
         };
-        LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+        LocationServices.getFusedLocationProviderClient(context)
+                .requestLocationUpdates(locationRequest,locationCallback,null);
         return locationData;
+
     }
 
     public Boolean isLocationEnabled() {
@@ -78,5 +80,9 @@ public class LocationRepo {
                 && locationManager.isProviderEnabled(
                 LocationManager.NETWORK_PROVIDER
         );
+    }
+
+    static public LatLng toLatLng(Location location){
+        return new LatLng(location.getLatitude(),location.getLongitude());
     }
 }

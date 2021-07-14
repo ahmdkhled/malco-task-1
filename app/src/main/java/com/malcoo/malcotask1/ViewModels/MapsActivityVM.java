@@ -1,6 +1,7 @@
 package com.malcoo.malcotask1.ViewModels;
 
 import android.app.Application;
+import android.location.Location;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -12,13 +13,15 @@ import com.malcoo.malcotask1.Repo.LocationRepo;
 
 public class MapsActivityVM extends AndroidViewModel {
 
+    public boolean firstLocationReq=true;
+
     public MapsActivityVM(@NonNull Application application) {
         super(application);
     }
 
-    public MutableLiveData<Result<LatLng>> getLocation() {
+    public MutableLiveData<Result<Location>> getLocation() {
         return LocationRepo.getInstance(getApplication().getApplicationContext())
-                .getLocation();
+                .trackLocation();
 
     }
 

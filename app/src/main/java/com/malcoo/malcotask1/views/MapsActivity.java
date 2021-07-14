@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.malcoo.malcotask1.Model.Result;
 import com.malcoo.malcotask1.R;
+import com.malcoo.malcotask1.Repo.LocationRepo;
 import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.ViewModels.MapsActivityVM;
@@ -57,13 +59,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         permissionUtil.requestPermission(this);
         checkLocation();
+        LocationRepo.getInstance(this).trackLocation();
+
     }
 
     @Override
     public void onMapReady( GoogleMap googleMap) {
         mMap = googleMap;
         mMap.addMarker(new MarkerOptions().title("ware house").position(warehouse));
-        mapUtil.drawCircle(warehouse,mMap);
+        // dynamic radius as required
+        mapUtil.drawCircle(500,warehouse,mMap);
     }
 
     void checkLocation(){
@@ -95,19 +100,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         mapsActivityVM.getLocation().observe(this, latLngResult -> {
-            LatLng cordinates=latLngResult.getData();
-            if (latLngResult.isSuccess()&&cordinates!=null){
-                mMap.addMarker(new MarkerOptions().position(cordinates)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
-                mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(cordinates, 12f));
-                boolean inCircle=mapUtil.isInCircle(cordinates);
-                String message=mapUtil.getMessage(inCircle);
-                Alerter.create(this).setTitle("your status")
-                        .setText(message).
-                        setBackgroundColorRes(mapUtil.getColor(inCircle)).show();
+            Location location=latLngResult.getData();
+            if (latLngResult.isSuccess()&&location!=null){
+                LatLng coordinates=LocationRepo.toLatLng(location);
+
+                boolean inCircle=mapUtil.isInCircle(coordinates);
+                mapUtil.addCurrentLocationMarker(mMap,coordinates);
+                mapUtil.alert(inCircle,this);
+
+
 
             }else {
-                Log.d("TAG", "checkLocation: no location ");
                 Toast.makeText(this, "failed to get Location", Toast.LENGTH_SHORT).show();
             }
         });
