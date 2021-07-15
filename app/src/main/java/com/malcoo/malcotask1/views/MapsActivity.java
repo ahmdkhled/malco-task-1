@@ -108,8 +108,11 @@ public class MapsActivity extends FragmentActivity implements
                 mapUtil.alert(inCircle,this);
                 Log.d("Timer", "getCurrentLocation: called "+inCircle);
                 if (inCircle){
+                    Log.d("LOG_TIME", "entering time : "+System.currentTimeMillis());
                     Timer.getInstance(this,30000,1000).start();
                     LocationRepo.getInstance(this).stopLocationUpdate();
+                }else {
+                    Log.d("LOG_TIME", "exit time : "+System.currentTimeMillis());
                 }
 
             }else {
