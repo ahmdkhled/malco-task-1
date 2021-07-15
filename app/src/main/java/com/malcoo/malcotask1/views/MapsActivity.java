@@ -1,13 +1,11 @@
 package com.malcoo.malcotask1.views;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,35 +14,30 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.location.ActivityTransitionEvent;
-import com.google.android.gms.location.ActivityTransitionResult;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.malcoo.malcotask1.Model.Result;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Repo.LocationRepo;
 import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
-import com.malcoo.malcotask1.Utils.TransitionReceiver;
+import com.malcoo.malcotask1.Utils.Timer;
 import com.malcoo.malcotask1.ViewModels.MapsActivityVM;
-import com.tapadoo.alerter.Alerter;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,LocationBottomSheet.OnActivateLocationClickedListener {
+public class MapsActivity extends FragmentActivity implements
+        OnMapReadyCallback,LocationBottomSheet.OnActivateLocationClickedListener ,
+        Timer.OnTimerFinished
+{
 
     private GoogleMap mMap;
     private MapsActivityVM mapsActivityVM;
     ActivityResultLauncher<Intent> launcher;
     MapUtil mapUtil=new MapUtil();
     PermissionUtil permissionUtil;
-    TransitionReceiver transitionReceiver;
     // random warehouse coordinates outside circle
     //LatLng warehouse=new LatLng(30.0742382,31.2856253);
 
@@ -62,13 +55,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        transitionReceiver=new TransitionReceiver();
 
         permissionUtil.requestPermission(this);
         checkLocation();
-        LocationRepo.getInstance(getApplicationContext()).registerActivityTransition();
-
-
 
 
     }
@@ -101,7 +90,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 permissionUtil.showDialog(this,this);
             }
         }
-        Log.d("Transition", "onRequestPermissionsResult: "+permissionUtil.permissionGranted(this));
     }
 
     private void getCurrentLocation(){
@@ -118,8 +106,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 boolean inCircle=mapUtil.isInCircle(coordinates);
                 mapUtil.addCurrentLocationMarker(mMap,coordinates);
                 mapUtil.alert(inCircle,this);
-
-
+                Log.d("Timer", "getCurrentLocation: called "+inCircle);
+                if (inCircle){
+                    Timer.getInstance(this,30000,1000).start();
+                    LocationRepo.getInstance(this).stopLocationUpdate();
+                }
 
             }else {
                 Toast.makeText(this, "failed to get Location", Toast.LENGTH_SHORT).show();
@@ -133,16 +124,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        IntentFilter intentFilter=new IntentFilter(LocationRepo.TRANSITIONS_RECEIVER_ACTION);
-        intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(transitionReceiver,intentFilter);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(transitionReceiver);
+    public void onTimerFinished() {
+        getCurrentLocation();
     }
 }

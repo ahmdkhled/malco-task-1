@@ -39,4 +39,14 @@ public class Result<T> {
     public boolean isSuccess() {
         return success;
     }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "isLoading=" + isLoading +
+                ", data=" + data +
+                ", error='" + error + '\'' +
+                ", success=" + success +
+                '}';
+    }
 }
