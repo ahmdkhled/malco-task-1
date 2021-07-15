@@ -17,7 +17,9 @@ public class PermissionUtil {
     public void requestPermission(Activity activity) {
         String[] permissions = {
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION};
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACTIVITY_RECOGNITION
+        };
 
         ActivityCompat.requestPermissions(
                 activity, permissions
@@ -27,9 +29,7 @@ public class PermissionUtil {
 
     public boolean permissionGranted(Context context) {
         return ContextCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                context, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED;
     }
 
     public void showDialog(Context context,Activity activity){
