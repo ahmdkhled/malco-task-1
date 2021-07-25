@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Repo.LocationRepo;
+import com.malcoo.malcotask1.Utils.LogSystem;
 import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.Utils.Timer;
@@ -32,12 +33,14 @@ public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,LocationBottomSheet.OnActivateLocationClickedListener ,
         Timer.OnTimerFinished
 {
-
+    private static final String TAG = "MapsActivityyy";
     private GoogleMap mMap;
     private MapsActivityVM mapsActivityVM;
     ActivityResultLauncher<Intent> launcher;
     MapUtil mapUtil=new MapUtil();
     PermissionUtil permissionUtil;
+    LogSystem logSystem;
+
     // random warehouse coordinates outside circle
     //LatLng warehouse=new LatLng(30.0742382,31.2856253);
 
@@ -59,6 +62,7 @@ public class MapsActivity extends FragmentActivity implements
         permissionUtil.requestPermission(this);
         checkLocation();
 
+        
 
     }
 
@@ -109,10 +113,12 @@ public class MapsActivity extends FragmentActivity implements
                 Log.d("Timer", "getCurrentLocation: called "+inCircle);
                 if (inCircle){
                     Log.d("LOG_TIME", "entering time : "+System.currentTimeMillis());
+                    logSystem.addEnteringTime(System.currentTimeMillis());
                     Timer.getInstance(this,30000,1000).start();
                     LocationRepo.getInstance(this).stopLocationUpdate();
                 }else {
                     Log.d("LOG_TIME", "exit time : "+System.currentTimeMillis());
+                    logSystem.addLeavingTime(System.currentTimeMillis());
                 }
 
             }else {
