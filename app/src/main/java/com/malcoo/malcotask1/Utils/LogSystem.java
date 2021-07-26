@@ -35,7 +35,7 @@ public class LogSystem {
     }
 
     public void addEnteringTime(long enteringTime){
-         if (getStatus()==IN_CIRCLE) return;
+         if (getStatus()==IN_CIRCLE || enteredToday()) return;
          setStatus(IN_CIRCLE);
          String json=sharedPreferences.getString(LOG_KEY,"");
          ArrayList<Log> logs=getLogList(json);
@@ -44,6 +44,7 @@ public class LogSystem {
          logs.add(log);
          String newJson=toJson(logs);
          editor.putString(LOG_KEY,newJson).apply();
+        android.util.Log.d(TAG, "entered : "+enteredToday());
         android.util.Log.d(TAG, "addEnteringTime: ");
 
 
@@ -84,13 +85,31 @@ public class LogSystem {
         return logs;
     }
 
+    private boolean enteredToday(){
+        ArrayList<Log> logs=getLogList(print());
+        if (logs==null||logs.isEmpty()){
+            return false;
+        }
+        for (Log log:logs){
+            long enteringTime=log.getEnteringTime();
+            long currentTime=System.currentTimeMillis();
+            long diff=(currentTime-enteringTime);
+            android.util.Log.d(TAG, "is enteredToday: "+currentTime +"  >>>>>  "+enteringTime);
+            android.util.Log.d(TAG, "is enteredToday: " +diff);
+            if (diff<86400000)return true;
+        }
+
+        return false;
+    }
+
     public String print(){
         return sharedPreferences.getString(LOG_KEY,"");
 
     }
 
     public void clear(){
-         editor.putString(LOG_KEY,"").apply();
+
+         editor.clear();
     }
 
 }
