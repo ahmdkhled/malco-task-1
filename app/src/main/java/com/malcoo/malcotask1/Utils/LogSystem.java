@@ -17,6 +17,11 @@ public class LogSystem {
      private SharedPreferences sharedPreferences;
      private SharedPreferences.Editor editor;
      public static final String LOG_KEY="logs";
+     public static final String STATUS_KEY="status";
+     public static final int IN_CIRCLE=1;
+     public static final int OUT_OF_CIRCLE=0;
+     public static final int UNKNOWN=-1;
+    private static final String TAG = "LogSystem";
 
      @SuppressLint("CommitPrefEdits")
      private LogSystem(Context context) {
@@ -30,6 +35,8 @@ public class LogSystem {
     }
 
     public void addEnteringTime(long enteringTime){
+         if (getStatus()==IN_CIRCLE) return;
+         setStatus(IN_CIRCLE);
          String json=sharedPreferences.getString(LOG_KEY,"");
          ArrayList<Log> logs=getLogList(json);
          Log log=new Log();
@@ -37,10 +44,13 @@ public class LogSystem {
          logs.add(log);
          String newJson=toJson(logs);
          editor.putString(LOG_KEY,newJson).apply();
+        android.util.Log.d(TAG, "addEnteringTime: ");
 
 
     }
     public boolean addLeavingTime(long leavingTime){
+         if (getStatus()==OUT_OF_CIRCLE)return false;
+         setStatus(OUT_OF_CIRCLE);
         String json=sharedPreferences.getString(LOG_KEY,"");
         ArrayList<Log> logs=getLogList(json);
         if (logs.isEmpty()){
@@ -48,12 +58,20 @@ public class LogSystem {
         else {
             Log log=logs.get(logs.size()-1);
             if (log.getLeavingTime()!=-1) return false;
-            log.setLeavingTime(888);
+            log.setLeavingTime(leavingTime);
             logs.set(logs.size()-1,log);
             editor.putString(LOG_KEY,toJson(logs)).apply();
-
+            android.util.Log.d(TAG, "addLeavingTime: ");
             return true;
         }
+    }
+
+    public void setStatus(int status){
+         editor.putInt(STATUS_KEY,status).apply();
+    }
+
+    public int getStatus(){
+         return sharedPreferences.getInt(STATUS_KEY,UNKNOWN);
     }
 
     private String toJson(ArrayList<Log> log){
@@ -69,6 +87,10 @@ public class LogSystem {
     public String print(){
         return sharedPreferences.getString(LOG_KEY,"");
 
+    }
+
+    public void clear(){
+         editor.putString(LOG_KEY,"").apply();
     }
 
 }
