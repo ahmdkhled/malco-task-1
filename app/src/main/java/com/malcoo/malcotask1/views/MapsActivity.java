@@ -42,7 +42,7 @@ public class MapsActivity extends FragmentActivity implements
     LogSystem logSystem;
 
     // random warehouse coordinates outside circle
-    //LatLng warehouse=new LatLng(30.0742382,31.2856253);
+    //LatLng warehouse=new LatLng(24.689332,46.711770);
 
     // random warehouse coordinates inside circle
     LatLng warehouse=new LatLng(30.073859,31.3012522);
