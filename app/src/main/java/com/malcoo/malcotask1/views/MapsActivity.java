@@ -62,7 +62,6 @@ public class MapsActivity extends FragmentActivity implements
 
         permissionUtil.requestPermission(this);
         checkLocation();
-        //logSystem.clear();
 
     }
 

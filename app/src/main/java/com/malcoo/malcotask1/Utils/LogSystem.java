@@ -3,12 +3,15 @@ package com.malcoo.malcotask1.Utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.format.DateFormat;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.malcoo.malcotask1.Model.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class LogSystem {
 
@@ -44,8 +47,7 @@ public class LogSystem {
          logs.add(log);
          String newJson=toJson(logs);
          editor.putString(LOG_KEY,newJson).apply();
-        android.util.Log.d(TAG, "entered : "+enteredToday());
-        android.util.Log.d(TAG, "addEnteringTime: ");
+         android.util.Log.d(TAG, "addEnteringTime: "+print());
 
 
     }
@@ -91,15 +93,18 @@ public class LogSystem {
             return false;
         }
         for (Log log:logs){
-            long enteringTime=log.getEnteringTime();
-            long currentTime=System.currentTimeMillis();
-            long diff=(currentTime-enteringTime);
-            android.util.Log.d(TAG, "is enteredToday: "+currentTime +"  >>>>>  "+enteringTime);
-            android.util.Log.d(TAG, "is enteredToday: " +diff);
-            if (diff<86400000)return true;
+            String enteringDay=toDate(log.getEnteringTime());
+            String currentDay=toDate(System.currentTimeMillis());
+            if (enteringDay.equals(currentDay))return true;
         }
 
         return false;
+    }
+
+    private String toDate(long timestamp){
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timestamp);
+        return DateFormat.format("dd-MM-yyyy", cal).toString();
     }
 
     public String print(){
