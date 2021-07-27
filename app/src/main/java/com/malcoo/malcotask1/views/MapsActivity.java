@@ -2,7 +2,6 @@ package com.malcoo.malcotask1.views;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -13,6 +12,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -28,6 +28,7 @@ import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.Utils.Timer;
 import com.malcoo.malcotask1.ViewModels.MapsActivityVM;
+import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
 
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,LocationBottomSheet.OnActivateLocationClickedListener ,
@@ -40,7 +41,7 @@ public class MapsActivity extends FragmentActivity implements
     MapUtil mapUtil=new MapUtil();
     PermissionUtil permissionUtil;
     LogSystem logSystem;
-
+    ActivityMapsBinding binding;
     // random warehouse coordinates outside circle
     //LatLng warehouse=new LatLng(24.689332,46.711770);
 
@@ -51,7 +52,7 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        binding= DataBindingUtil.setContentView(this,R.layout.activity_maps);
         mapsActivityVM=new ViewModelProvider(this).get(MapsActivityVM.class);
         permissionUtil=new PermissionUtil();
         logSystem=LogSystem.getInstance(this);
@@ -62,6 +63,8 @@ public class MapsActivity extends FragmentActivity implements
 
         permissionUtil.requestPermission(this);
         checkLocation();
+
+
 
     }
 
@@ -108,7 +111,8 @@ public class MapsActivity extends FragmentActivity implements
 
                 boolean inCircle=mapUtil.isInCircle(coordinates);
                 mapUtil.addCurrentLocationMarker(mMap,coordinates);
-                mapUtil.alert(inCircle,this);
+                mapUtil.update(inCircle,binding);
+
                 Log.d("Timer", "getCurrentLocation: called "+inCircle);
                 if (inCircle){
                     Log.d("LOG_TIME", "entering time : "+System.currentTimeMillis());

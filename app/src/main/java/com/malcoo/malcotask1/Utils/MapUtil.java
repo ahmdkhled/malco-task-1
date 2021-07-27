@@ -1,8 +1,10 @@
 package com.malcoo.malcotask1.Utils;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.location.Location;
+import android.view.View;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,7 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.malcoo.malcotask1.R;
-import com.tapadoo.alerter.Alerter;
+import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
 
 public class MapUtil {
     Circle circle;
@@ -26,11 +28,12 @@ public class MapUtil {
         return marker;
     }
 
-    public void alert(boolean inCircle, Activity activity){
-        Alerter.create(activity).setTitle("your status")
-                .setText(getMessage(inCircle)).
-                setBackgroundColorRes(getColor(inCircle))
-                .show();
+
+
+    public void update(boolean inCircle, ActivityMapsBinding binding){
+        binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
+        binding.statusFooter.status.setText(getMessage(inCircle));
+        binding.statusFooter.getRoot().setBackgroundResource(getColor(inCircle));
     }
 
     //function to add circle surrounding plcaes like ware house
