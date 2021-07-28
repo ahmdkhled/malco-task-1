@@ -23,7 +23,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Repo.LocationRepo;
-import com.malcoo.malcotask1.Utils.LogSystem;
 import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.Utils.Timer;
@@ -40,7 +39,6 @@ public class MapsActivity extends FragmentActivity implements
     ActivityResultLauncher<Intent> launcher;
     MapUtil mapUtil=new MapUtil();
     PermissionUtil permissionUtil;
-    LogSystem logSystem;
     ActivityMapsBinding binding;
     // random warehouse coordinates outside circle
     //LatLng warehouse=new LatLng(24.689332,46.711770);
@@ -55,7 +53,6 @@ public class MapsActivity extends FragmentActivity implements
         binding= DataBindingUtil.setContentView(this,R.layout.activity_maps);
         mapsActivityVM=new ViewModelProvider(this).get(MapsActivityVM.class);
         permissionUtil=new PermissionUtil();
-        logSystem=LogSystem.getInstance(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -115,13 +112,8 @@ public class MapsActivity extends FragmentActivity implements
 
                 Log.d("Timer", "getCurrentLocation: called "+inCircle);
                 if (inCircle){
-                    Log.d("LOG_TIME", "entering time : "+System.currentTimeMillis());
-                    logSystem.addEnteringTime(System.currentTimeMillis());
                     Timer.getInstance(this,30000,1000).start();
                     LocationRepo.getInstance(this).stopLocationUpdate();
-                }else {
-                    Log.d("LOG_TIME", "exit time : "+System.currentTimeMillis());
-                    logSystem.addLeavingTime(System.currentTimeMillis());
                 }
 
             }else {
