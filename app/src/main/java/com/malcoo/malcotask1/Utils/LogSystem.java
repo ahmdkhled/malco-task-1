@@ -12,6 +12,7 @@ import com.malcoo.malcotask1.Model.Log;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class LogSystem {
 
@@ -37,8 +38,8 @@ public class LogSystem {
         return logSystem==null?logSystem=new LogSystem(context):logSystem;
     }
 
-    public void addEnteringTime(long enteringTime){
-         if (getStatus()==IN_CIRCLE || enteredToday()) return;
+    public boolean addEnteringTime(long enteringTime){
+         if (getStatus()==IN_CIRCLE ) return false;
          setStatus(IN_CIRCLE);
          String json=sharedPreferences.getString(LOG_KEY,"");
          ArrayList<Log> logs=getLogList(json);
@@ -48,24 +49,24 @@ public class LogSystem {
          String newJson=toJson(logs);
          editor.putString(LOG_KEY,newJson).apply();
          android.util.Log.d(TAG, "addEnteringTime: "+print());
-
+        return true;
 
     }
-    public boolean addLeavingTime(long leavingTime){
-         if (getStatus()==OUT_OF_CIRCLE)return false;
+    public long addLeavingTime(long leavingTime){
+         if (getStatus()==OUT_OF_CIRCLE)return -1;
          setStatus(OUT_OF_CIRCLE);
         String json=sharedPreferences.getString(LOG_KEY,"");
         ArrayList<Log> logs=getLogList(json);
         if (logs.isEmpty()){
-            return false;}
+            return -1;}
         else {
             Log log=logs.get(logs.size()-1);
-            if (log.getLeavingTime()!=-1) return false;
+            if (log.getLeavingTime()!=-1) return -1;
             log.setLeavingTime(leavingTime);
             logs.set(logs.size()-1,log);
             editor.putString(LOG_KEY,toJson(logs)).apply();
             android.util.Log.d(TAG, "addLeavingTime: ");
-            return true;
+            return log.getEnteringTime();
         }
     }
 
@@ -107,14 +108,49 @@ public class LogSystem {
         return DateFormat.format("dd-MM-yyyy", cal).toString();
     }
 
+    public String log(long enteringTimeStamp, long leavingTimeStamp){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(enteringTimeStamp);
+        String enteringDay= DaysOfWeek.values()[c.get(Calendar.DAY_OF_WEEK)].name();
+        String enteringTime=new SimpleDateFormat("HH:mm:ss a").format(new Date(enteringTimeStamp));
+        String leavingTime="still inside";
+        if (leavingTimeStamp>0)
+         leavingTime=new SimpleDateFormat("HH:mm:ss a").format(new Date(leavingTimeStamp));
+
+        return enteringDay +" >> "+enteringTime +" >> "+leavingTime;
+
+    }
+
     public String print(){
         return sharedPreferences.getString(LOG_KEY,"");
+    }
 
+    public String log(){
+         ArrayList<Log> logs=getLogList(print());
+         StringBuilder stringBuilder=new StringBuilder();
+        stringBuilder.append("\n-------------- printing the log ----------------- \n");
+         for (Log log:logs){
+            stringBuilder.append(log(log.getEnteringTime(),log.getLeavingTime()));
+            stringBuilder.append("\n");
+         }
+         stringBuilder.append("\n -------------------end of log -----------------------");
+         return stringBuilder.toString();
     }
 
     public void clear(){
 
          editor.clear();
+    }
+
+    private enum DaysOfWeek{
+        SATURDAY,
+        SUNDAY,
+         MONDAY,
+        TUESDAY,
+        WEDNESDAY,
+        THURSDAY,
+        FRIDAY
+
     }
 
 }

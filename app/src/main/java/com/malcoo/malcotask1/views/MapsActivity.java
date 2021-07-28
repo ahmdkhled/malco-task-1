@@ -64,6 +64,8 @@ public class MapsActivity extends FragmentActivity implements
         permissionUtil.requestPermission(this);
         checkLocation();
 
+        String log=logSystem.log();
+        Log.d("LOG_TIME", log);
 
 
     }
@@ -114,14 +116,20 @@ public class MapsActivity extends FragmentActivity implements
                 mapUtil.update(inCircle,binding);
 
                 Log.d("Timer", "getCurrentLocation: called "+inCircle);
+                long currentTime=System.currentTimeMillis();
                 if (inCircle){
-                    Log.d("LOG_TIME", "entering time : "+System.currentTimeMillis());
-                    logSystem.addEnteringTime(System.currentTimeMillis());
+
+                    boolean logged=logSystem.addEnteringTime(currentTime);
+                    if (logged)
+                    Log.d("LOG_TIME", "entering warehouse : "+logSystem.log(currentTime,-1));
+
                     Timer.getInstance(this,30000,1000).start();
                     LocationRepo.getInstance(this).stopLocationUpdate();
                 }else {
-                    Log.d("LOG_TIME", "exit time : "+System.currentTimeMillis());
-                    logSystem.addLeavingTime(System.currentTimeMillis());
+                    long enteringTime=logSystem.addLeavingTime(System.currentTimeMillis());
+                    if (enteringTime!=-1)
+                    Log.d("LOG_TIME", "exiting ware house  : "+logSystem.log(enteringTime,currentTime));
+
                 }
 
             }else {
