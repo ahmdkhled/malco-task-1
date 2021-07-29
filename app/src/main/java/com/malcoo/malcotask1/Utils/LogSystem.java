@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class LogSystem {
 
@@ -38,7 +39,7 @@ public class LogSystem {
         return logSystem==null?logSystem=new LogSystem(context):logSystem;
     }
 
-    public boolean addEnteringTime(long enteringTime){
+    public boolean addEnteringTime(Long enteringTime){
          if (getStatus()==IN_CIRCLE ) return false;
          setStatus(IN_CIRCLE);
          String json=sharedPreferences.getString(LOG_KEY,"");
@@ -52,7 +53,7 @@ public class LogSystem {
         return true;
 
     }
-    public long addLeavingTime(long leavingTime){
+    public long addLeavingTime(Long leavingTime){
          if (getStatus()==OUT_OF_CIRCLE)return -1;
          setStatus(OUT_OF_CIRCLE);
         String json=sharedPreferences.getString(LOG_KEY,"");
@@ -112,10 +113,10 @@ public class LogSystem {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(enteringTimeStamp);
         String enteringDay= DaysOfWeek.values()[c.get(Calendar.DAY_OF_WEEK)].name();
-        String enteringTime=new SimpleDateFormat("HH:mm:ss a").format(new Date(enteringTimeStamp));
+        String enteringTime=new SimpleDateFormat("hh:mm:ss a").format(new Date(enteringTimeStamp));
         String leavingTime="";
         if (leavingTimeStamp!=null)
-         leavingTime=new SimpleDateFormat("HH:mm:ss a").format(new Date(leavingTimeStamp));
+         leavingTime=new SimpleDateFormat("hh:mm:ss a").format(new Date(leavingTimeStamp));
 
         return enteringDay +" >> "+enteringTime +" >> "+leavingTime;
 
@@ -125,8 +126,14 @@ public class LogSystem {
         return sharedPreferences.getString(LOG_KEY,"");
     }
 
-    public String log(){
-         ArrayList<Log> logs=getLogList(print());
+    @SafeVarargs
+    public final String log(ArrayList<Log>... logsList){
+         ArrayList<Log> logs=new ArrayList<>();
+         if(logsList.length==0){
+             logs=getLogList(print());
+         }else {
+             logs=logsList[0];
+         }
          StringBuilder stringBuilder=new StringBuilder();
         stringBuilder.append("\n-------------- printing the log ----------------- \n");
          for (Log log:logs){
@@ -135,6 +142,20 @@ public class LogSystem {
          }
          stringBuilder.append("\n -------------------end of log -----------------------");
          return stringBuilder.toString();
+    }
+
+
+    public String logToday(){
+        ArrayList<Log> logs=getLogList(print());
+        ArrayList<Log> todayLogs=new ArrayList<>();
+
+        for (Log log:logs){
+            String enteringDay=toDate(log.getEnteringTime());
+            String currentDay=toDate(System.currentTimeMillis());
+            if (enteringDay.equals(currentDay))
+                todayLogs.add(log);
+        }
+        return log(todayLogs);
     }
 
     public void clear(){

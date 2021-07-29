@@ -43,10 +43,10 @@ public class MapsActivity extends FragmentActivity implements
     LogSystem logSystem;
     ActivityMapsBinding binding;
     // random warehouse coordinates outside circle
-    LatLng warehouse=new LatLng(24.689332,46.711770);
+    //LatLng warehouse=new LatLng(24.689332,46.711770);
 
     // random warehouse coordinates inside circle
-    //LatLng warehouse=new LatLng(30.073859,31.3012522);
+    LatLng warehouse=new LatLng(30.073859,31.3012522);
 
 
     @Override
@@ -64,7 +64,11 @@ public class MapsActivity extends FragmentActivity implements
         permissionUtil.requestPermission(this);
         checkLocation();
 
-        String log=logSystem.log();
+
+
+
+
+        String log=logSystem.logToday();
         Log.d("LOG_TIME", log);
 
 
