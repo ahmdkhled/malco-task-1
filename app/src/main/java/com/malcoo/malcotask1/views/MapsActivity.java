@@ -43,10 +43,10 @@ public class MapsActivity extends FragmentActivity implements
     LogSystem logSystem;
     ActivityMapsBinding binding;
     // random warehouse coordinates outside circle
-    //LatLng warehouse=new LatLng(24.689332,46.711770);
+    LatLng warehouse=new LatLng(24.689332,46.711770);
 
     // random warehouse coordinates inside circle
-    LatLng warehouse=new LatLng(30.073859,31.3012522);
+    //LatLng warehouse=new LatLng(30.073859,31.3012522);
 
 
     @Override
@@ -121,7 +121,7 @@ public class MapsActivity extends FragmentActivity implements
 
                     boolean logged=logSystem.addEnteringTime(currentTime);
                     if (logged)
-                    Log.d("LOG_TIME", "entering warehouse : "+logSystem.log(currentTime,-1));
+                    Log.d("LOG_TIME", "entering warehouse : "+logSystem.log(currentTime,null));
 
                     Timer.getInstance(this,30000,1000).start();
                     LocationRepo.getInstance(this).stopLocationUpdate();

@@ -2,8 +2,8 @@ package com.malcoo.malcotask1.Model;
 
 public class Log {
 
-    long enteringTime=-1;
-    long leavingTime=-1;
+    long enteringTime;
+    public Long leavingTime=null;
 
     public Log() {
     }
@@ -21,7 +21,7 @@ public class Log {
         this.enteringTime = enteringTime;
     }
 
-    public long getLeavingTime() {
+    public Long getLeavingTime() {
         return leavingTime;
     }
 
