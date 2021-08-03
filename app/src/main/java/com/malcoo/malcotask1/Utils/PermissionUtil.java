@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat;
 public class PermissionUtil {
 
     public static final int PERMISSION_ID = 120;
+    public static final int Camera_PERMISSION_ID = 122;
 
     public void requestPermission(Activity activity) {
         String[] permissions = {
@@ -32,11 +33,24 @@ public class PermissionUtil {
                 context, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED;
     }
 
+    public void requestCameraPermission(Activity activity){
+
+        String[] permissions = {
+                Manifest.permission.CAMERA,
+
+        };
+
+        ActivityCompat.requestPermissions(
+                activity, permissions
+                , Camera_PERMISSION_ID
+        );
+    }
+
     public void showDialog(Context context,Activity activity){
         AlertDialog dialog=new AlertDialog.Builder(context)
                 .setCancelable(false)
                 .setTitle("Permission needed")
-                .setMessage("location permission is needed for completing in app, so please accept permission")
+                .setMessage("this permission is needed for completing in app, so please accept permission")
                 .setPositiveButton("accept permission", (dialog1, which) -> {
                     requestPermission(activity);
 

@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">malcoo task 1</string>
+    <string name="app_name">Malcoo</string>
     <string name="google_maps_key" translatable="false">AIzaSyDaxduDtdB4QuwzA6B4J5IrPuOsxFo47oo</string>
-    <string name="title_activity_maps">Map</string>
     <string name="activate_location_message">your location is turned off please activate yor location</string>
 </resources>

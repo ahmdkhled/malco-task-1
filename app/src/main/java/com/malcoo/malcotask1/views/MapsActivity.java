@@ -80,6 +80,7 @@ public class MapsActivity extends FragmentActivity implements
         mMap.addMarker(new MarkerOptions().title("ware house").position(warehouse));
         // dynamic radius as required
         mapUtil.drawCircle(500,warehouse,mMap);
+        Log.d(TAG, "onMapReady: ");
     }
 
     void checkLocation(){
@@ -95,9 +96,12 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(TAG, "onRequestPermissionsResult: "+requestCode);
+
         if (requestCode == PermissionUtil.PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentLocation();
+                Log.d(TAG, "onRequestPermissionsResult: ");
             }else{
                 permissionUtil.showDialog(this,this);
             }
@@ -106,6 +110,7 @@ public class MapsActivity extends FragmentActivity implements
 
     private void getCurrentLocation(){
         if (!mapsActivityVM.isLocationEnabled()){
+            Log.d("BUGGG", "location not enabled: ");
             new LocationBottomSheet(this)
                     .show(getSupportFragmentManager(),"");
             return;
