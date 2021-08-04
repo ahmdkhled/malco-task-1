@@ -5,6 +5,11 @@
     >
 
     <data>
+        <variable
+            name="inside"
+            type="Boolean" />
+
+
 
     </data>
 
@@ -13,6 +18,7 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:background="@color/red"
+        tools:background="@color/green"
 
         >
 
@@ -34,6 +40,23 @@
             app:layout_constraintTop_toTopOf="@id/icon"
             app:layout_constraintBottom_toBottomOf="@id/icon"
             android:layout_marginStart="5dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:id="@+id/check_in"
+            android:text="Check in"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:background="@drawable/check_in_button"
+            android:enabled="@{inside}"
+            android:visibility='@{inside?0:8}'
+            android:drawableStart="@drawable/ic_baseline_done_24"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
