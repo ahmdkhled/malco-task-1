@@ -22,7 +22,7 @@ import java.util.concurrent.Executor;
 public class CameraUtil {
     private  static CameraUtil cameraUtil;
     ImageCapture imageCapture =new  ImageCapture.Builder().build();
-    private BarcodeScanner scanner =  BarcodeScanning.getClient();
+    private BarcodeScanner scanner;
     ImageAnalysis imageAnalysis;
     BarcodeAnalyzer.OnBarcodeScannedListener onBarcodeScannedListener;
 
@@ -52,6 +52,7 @@ public class CameraUtil {
                 CameraSelector cameraSelector = new CameraSelector.Builder()
                         .requireLensFacing(CameraSelector.LENS_FACING_BACK).build();
 
+                scanner =  BarcodeScanning.getClient();
                 imageAnalysis = new ImageAnalysis.Builder()
                         .build();
                 imageAnalysis.setAnalyzer(cameraExecutor,new BarcodeAnalyzer(scanner, onBarcodeScannedListener));

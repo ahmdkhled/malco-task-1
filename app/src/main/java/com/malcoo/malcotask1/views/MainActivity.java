@@ -64,9 +64,16 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == PermissionUtil.Camera_PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 CameraUtil.getInstance().startCamera(this,this,binding.previewView);
+                Log.d(TAG, "onRequestPermissionsResult: ");
             }else{
                 permissionUtil.showDialog(this,this);
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
     }
 }
