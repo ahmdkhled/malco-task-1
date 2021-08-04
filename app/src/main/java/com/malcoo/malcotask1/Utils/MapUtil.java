@@ -2,6 +2,7 @@ package com.malcoo.malcotask1.Utils;
 
 import android.graphics.Color;
 import android.location.Location;
+import android.util.Log;
 import android.view.View;
 
 import androidx.fragment.app.FragmentManager;
@@ -63,6 +64,26 @@ public class MapUtil {
 
         return  distance[0] <= circle.getRadius();
 
+    }
+
+    public static LatLng getCoordinates(String coordinatesString){
+        Log.d("MainActivityyy", "getCoordinates: "+coordinatesString);
+        if (coordinatesString==null) return null;
+        if (coordinatesString.contains(",")){
+            String[] values=coordinatesString.split(",");
+            try {
+
+
+                double lat =  Double.parseDouble(values[0]);
+                double lng = Double.parseDouble(values[1]);
+                return new LatLng(lat,lng);
+            }catch (Exception e){
+                Log.d("MainActivityyy", "getCoordinates exception: "+e.getMessage());
+                return  null;
+            }
+
+        }
+        return null;
     }
 
     public String getMessage(boolean inCircle){

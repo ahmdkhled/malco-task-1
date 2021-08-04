@@ -23,6 +23,7 @@ public class CameraUtil {
     private  static CameraUtil cameraUtil;
     ImageCapture imageCapture =new  ImageCapture.Builder().build();
     private BarcodeScanner scanner =  BarcodeScanning.getClient();
+    ImageAnalysis imageAnalysis;
     BarcodeAnalyzer.OnBarcodeScannedListener onBarcodeScannedListener;
 
     private static final String TAG = "CameraUtil";
@@ -51,7 +52,7 @@ public class CameraUtil {
                 CameraSelector cameraSelector = new CameraSelector.Builder()
                         .requireLensFacing(CameraSelector.LENS_FACING_BACK).build();
 
-                ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
+                imageAnalysis = new ImageAnalysis.Builder()
                         .build();
                 imageAnalysis.setAnalyzer(cameraExecutor,new BarcodeAnalyzer(scanner, onBarcodeScannedListener));
 
@@ -65,10 +66,15 @@ public class CameraUtil {
                 );
 
 
+
             }, cameraExecutor);
 
 
 
+    }
+    public void stopAnalyzer(){
+        scanner.close();
+        imageAnalysis.clearAnalyzer();
     }
 
     public void setOnBarcodeScannedListener(BarcodeAnalyzer.OnBarcodeScannedListener onBarcodeScannedListener) {

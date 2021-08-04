@@ -46,7 +46,7 @@ public class MapsActivity extends FragmentActivity implements
     //LatLng warehouse=new LatLng(24.689332,46.711770);
 
     // random warehouse coordinates inside circle
-    LatLng warehouse=new LatLng(30.073859,31.3012522);
+    LatLng warehouse;
 
 
     @Override
@@ -61,6 +61,8 @@ public class MapsActivity extends FragmentActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Intent intent=getIntent();
+         warehouse=intent.getParcelableExtra(MainActivity.COORDINATES_KEY);
         permissionUtil.requestPermission(this);
         checkLocation();
 

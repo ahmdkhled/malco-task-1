@@ -2,4 +2,5 @@
     <string name="app_name">Malcoo</string>
     <string name="google_maps_key" translatable="false">AIzaSyDaxduDtdB4QuwzA6B4J5IrPuOsxFo47oo</string>
     <string name="activate_location_message">your location is turned off please activate yor location</string>
+    <string name="wrong_qr">this qr code is not valid please scan warehouse qr code</string>
 </resources>

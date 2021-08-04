@@ -1,15 +1,19 @@
 package com.malcoo.malcotask1.views;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Utils.CameraUtil;
+import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.databinding.ActivityMainBinding;
 
@@ -18,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     PermissionUtil permissionUtil;
+    private static final String TAG = "MainActivityyy";
+    public static final String COORDINATES_KEY="coordinates";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +34,21 @@ public class MainActivity extends AppCompatActivity {
 
         CameraUtil.getInstance().setOnBarcodeScannedListener(barcode -> {
             Log.d("BAR_CODE", "result : "+barcode.getRawValue());
-            binding.barcodeValue.setText(barcode.getRawValue());
+            String value=barcode.getRawValue();
+            LatLng coordinates= MapUtil.getCoordinates(value);
+            Log.d(TAG, "string: "+value);
+            if (coordinates==null){
+                binding.barcodeValue.setText(R.string.wrong_qr);
+
+            }else{
+                CameraUtil.getInstance().stopAnalyzer();
+                Intent intent=new Intent(this,MapsActivity.class);
+                intent.putExtra(COORDINATES_KEY,coordinates);
+                startActivity(intent);
+                finish();
+            }
+
+
         });
 
 
