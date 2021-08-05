@@ -22,10 +22,15 @@ public class CheckInFrag extends Fragment {
 
     FragCheckInBinding binding;
     LatLng currentLocation;
+    public static final int CHECK_IN=1;
+    public static final int CHECK_OUT=2;
+    int status;
     private static final String TAG = "CheckInFrag";
 
-    CheckInFrag(LatLng currentLocation){
+
+    CheckInFrag(LatLng currentLocation,int status){
         this.currentLocation=currentLocation;
+        this.status=status;
     }
 
     @Nullable
@@ -33,32 +38,42 @@ public class CheckInFrag extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding= DataBindingUtil.inflate(LayoutInflater.from(container.getContext()), R.layout.frag_check_in,container,false);
 
-        checkIn();
+        observeQrCode();
+
+
+
         return binding.getRoot();
     }
 
-    private void checkIn(){
+    private void observeQrCode(){
         CameraUtil.getInstance().startCamera(getContext(),this,binding.previewView);
         CameraUtil.getInstance().setOnBarcodeScannedListener(barcode -> {
-            Log.d("BAR_CODE", "result : "+barcode.getRawValue());
             String value=barcode.getRawValue();
+            Log.d("BAR_CODE", "result : "+barcode.getRawValue());
             LatLng coordinates= MapUtil.getCoordinates(value);
             Log.d(TAG, "string: "+value);
             if (coordinates==null){
                 binding.barcodeValue.setText(R.string.wrong_qr);
-            }else{
-
-                float distance = MapUtil.getDistanceBetween(currentLocation,coordinates);
-                if (distance<=200){
-                    binding.barcodeValue.setText(R.string.checked_in);
-                    CameraUtil.getInstance().stopAnalyzer();
-                    FragmentUtils.replaceFragment(getContext(),new CheckedInFrag());
-
-                }
-
+                return;
+            }
+            float distance = MapUtil.getDistanceBetween(currentLocation,coordinates);
+            if (distance<=200){
+                if (status==CHECK_IN) checkIn();
+                else if (status==CHECK_OUT) checkOut();
             }
 
-
         });
+    }
+
+    private void checkIn(){
+        CameraUtil.getInstance().stopAnalyzer();
+        FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status));
+
+    }
+
+    private void checkOut() {
+        CameraUtil.getInstance().stopAnalyzer();
+        FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status));
+
     }
 }

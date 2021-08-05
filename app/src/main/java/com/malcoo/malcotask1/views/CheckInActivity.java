@@ -22,7 +22,7 @@ public class CheckInActivity extends AppCompatActivity {
 
     ActivityCheckInBinding binding;
     PermissionUtil permissionUtil;
-    LatLng currentLocation;
+    public LatLng currentLocation;
     private static final String TAG = "MainActivityyy";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class CheckInActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PermissionUtil.Camera_PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                FragmentUtils.addFrag(this,new CheckInFrag(currentLocation));
+                FragmentUtils.addFrag(this,new CheckInFrag(currentLocation,CheckInFrag.CHECK_IN));
                 Log.d(TAG, "onRequestPermissionsResult: ");
             }else{
                 permissionUtil.showDialog(this,this);
