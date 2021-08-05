@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -42,11 +43,13 @@ public class MapsActivity extends FragmentActivity implements
     PermissionUtil permissionUtil;
     LogSystem logSystem;
     ActivityMapsBinding binding;
+    LatLng coordinates;
+    public static final String LOCATION_KEY="location_key";
     // random warehouse coordinates outside circle
     //LatLng warehouse=new LatLng(24.689332,46.711770);
 
     // random warehouse coordinates inside circle
-    LatLng warehouse;
+    LatLng warehouse=new LatLng(30.073859,31.3012522);
 
 
     @Override
@@ -61,13 +64,16 @@ public class MapsActivity extends FragmentActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Intent intent=getIntent();
-         warehouse=intent.getParcelableExtra(MainActivity.COORDINATES_KEY);
         permissionUtil.requestPermission(this);
         checkLocation();
 
 
+        binding.statusFooter.checkIn.setOnClickListener(v->{
+            Intent intent=new Intent(this,CheckInActivity.class);
+            intent.putExtra(LOCATION_KEY,coordinates);
+            startActivity(intent);
 
+        });
 
 
         String log=logSystem.logToday();
@@ -120,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements
         mapsActivityVM.getLocation().observe(this, latLngResult -> {
             Location location=latLngResult.getData();
             if (latLngResult.isSuccess()&&location!=null){
-                LatLng coordinates=LocationRepo.toLatLng(location);
+                coordinates=LocationRepo.toLatLng(location);
 
                 boolean inCircle=mapUtil.isInCircle(coordinates);
                 mapUtil.addCurrentLocationMarker(mMap,coordinates);
@@ -129,7 +135,7 @@ public class MapsActivity extends FragmentActivity implements
                 Log.d("Timer", "getCurrentLocation: called "+inCircle);
                 long currentTime=System.currentTimeMillis();
                 if (inCircle){
-
+                    binding.statusFooter.setInside(true);
                     boolean logged=logSystem.addEnteringTime(currentTime);
                     if (logged)
                     Log.d("LOG_TIME", "entering warehouse : "+logSystem.log(currentTime,null));

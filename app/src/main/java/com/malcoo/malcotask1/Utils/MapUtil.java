@@ -66,6 +66,14 @@ public class MapUtil {
 
     }
 
+    public static float getDistanceBetween(LatLng Currentlocation,LatLng destination){
+        float[] distance=new float[2];
+         Location.distanceBetween( Currentlocation.latitude, Currentlocation.longitude,
+                destination.latitude, destination.longitude, distance);
+         return distance[0];
+
+    }
+
     public static LatLng getCoordinates(String coordinatesString){
         Log.d("MainActivityyy", "getCoordinates: "+coordinatesString);
         if (coordinatesString==null) return null;
