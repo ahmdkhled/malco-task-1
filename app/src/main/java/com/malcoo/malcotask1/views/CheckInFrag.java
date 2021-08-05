@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Utils.CameraUtil;
 import com.malcoo.malcotask1.Utils.FragmentUtils;
+import com.malcoo.malcotask1.Utils.LogSystem;
 import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.databinding.FragCheckInBinding;
 
@@ -22,6 +23,7 @@ public class CheckInFrag extends Fragment {
 
     FragCheckInBinding binding;
     LatLng currentLocation;
+    LogSystem logSystem;
     public static final int CHECK_IN=1;
     public static final int CHECK_OUT=2;
     int status;
@@ -37,7 +39,7 @@ public class CheckInFrag extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding= DataBindingUtil.inflate(LayoutInflater.from(container.getContext()), R.layout.frag_check_in,container,false);
-
+        logSystem=LogSystem.getInstance(getContext());
         observeQrCode();
 
 
@@ -58,6 +60,7 @@ public class CheckInFrag extends Fragment {
             }
             float distance = MapUtil.getDistanceBetween(currentLocation,coordinates);
             if (distance<=200){
+                CameraUtil.getInstance().stopAnalyzer();
                 if (status==CHECK_IN) checkIn();
                 else if (status==CHECK_OUT) checkOut();
             }
@@ -66,14 +69,15 @@ public class CheckInFrag extends Fragment {
     }
 
     private void checkIn(){
-        CameraUtil.getInstance().stopAnalyzer();
-        FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status));
-
+        long currentTime=System.currentTimeMillis();
+        logSystem.addEnteringTime(currentTime);
+        FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status,currentTime));
     }
 
     private void checkOut() {
-        CameraUtil.getInstance().stopAnalyzer();
-        FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status));
+        long currentTime=System.currentTimeMillis();
+        logSystem.addLeavingTime(currentTime);
+        FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status,currentTime));
 
     }
 }

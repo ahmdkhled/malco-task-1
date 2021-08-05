@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 public class LogSystem {
 
@@ -107,6 +106,12 @@ public class LogSystem {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp);
         return DateFormat.format("dd-MM-yyyy", cal).toString();
+    }
+
+    public static String toTime(long timeStamp){
+
+        return new SimpleDateFormat("hh:mm:ss a").format(new Date(timeStamp));
+
     }
 
     public String log(long enteringTimeStamp, Long leavingTimeStamp){
