@@ -25,6 +25,7 @@ public class CameraUtil {
     private BarcodeScanner scanner;
     ImageAnalysis imageAnalysis;
     BarcodeAnalyzer.OnBarcodeScannedListener onBarcodeScannedListener;
+    public static String lastValue="";
 
     private static final String TAG = "CameraUtil";
 
@@ -34,7 +35,7 @@ public class CameraUtil {
 
     public void startCamera(Context context, LifecycleOwner owner, PreviewView previewView){
 
-
+            CameraUtil.lastValue="";
             Preview preview = new Preview.Builder().build();
             ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(context);
             Executor cameraExecutor = ContextCompat.getMainExecutor(context);
@@ -76,6 +77,7 @@ public class CameraUtil {
     public void stopAnalyzer(){
         scanner.close();
         imageAnalysis.clearAnalyzer();
+        lastValue="";
     }
 
     public void setOnBarcodeScannedListener(BarcodeAnalyzer.OnBarcodeScannedListener onBarcodeScannedListener) {

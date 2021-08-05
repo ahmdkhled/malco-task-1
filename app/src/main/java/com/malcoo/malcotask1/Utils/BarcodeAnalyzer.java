@@ -37,10 +37,14 @@ public class BarcodeAnalyzer implements ImageAnalysis.Analyzer {
             InputImage image = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
             scanner.process(image)
                     .addOnSuccessListener(barcodes -> {
-                        Log.d(TAG, "analyze: success "+barcodes);
                         if (!barcodes.isEmpty()){
-                            onBarcodeScannedListener.oBarcodeScanned(barcodes.get(0));
-                            Log.d(TAG, "got one : "+barcodes.get(0).getRawValue());
+                            Log.d(TAG, "analyze: success "+barcodes.get(0).getRawValue() +" ------- > "+CameraUtil.lastValue);
+                            String value=barcodes.get(0).getRawValue();
+                            if (value!=null&&!value.equals(CameraUtil.lastValue)){
+                                onBarcodeScannedListener.oBarcodeScanned(barcodes.get(0));
+                                CameraUtil.lastValue=value;
+                                Log.d(TAG, "got one : "+barcodes.get(0).getRawValue());
+                            }
                         }
 
 
