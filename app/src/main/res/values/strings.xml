@@ -8,5 +8,7 @@
     <string name="welcome_message">you have checked in successfully  </string>
     <string name="goodbye">Good Bye</string>
     <string name="goodbye_message">you have checked out successfully  </string>
+    <string name="check_in">Check in</string>
+    <string name="check_out">Check out</string>
 
 </resources>

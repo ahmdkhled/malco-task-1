@@ -13,19 +13,22 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.malcoo.malcotask1.R;
+import com.malcoo.malcotask1.Repo.CheckInRepo;
 import com.malcoo.malcotask1.Utils.CameraUtil;
 import com.malcoo.malcotask1.Utils.FragmentUtils;
 import com.malcoo.malcotask1.Utils.LogSystem;
 import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.databinding.FragCheckInBinding;
 
+import static com.malcoo.malcotask1.Utils.LogSystem.CHECK_IN;
+import static com.malcoo.malcotask1.Utils.LogSystem.CHECK_OUT;
+
 public class CheckInFrag extends Fragment {
 
     FragCheckInBinding binding;
     LatLng currentLocation;
     LogSystem logSystem;
-    public static final int CHECK_IN=1;
-    public static final int CHECK_OUT=2;
+
     int status;
     private static final String TAG = "CheckInFrag";
 
@@ -43,7 +46,7 @@ public class CheckInFrag extends Fragment {
         observeQrCode();
 
 
-
+        Log.d(TAG, " checked in frag status : "+status);
         return binding.getRoot();
     }
 
@@ -53,7 +56,7 @@ public class CheckInFrag extends Fragment {
             String value=barcode.getRawValue();
             Log.d("BAR_CODE", "result : "+barcode.getRawValue());
             LatLng coordinates= MapUtil.getCoordinates(value);
-            Log.d(TAG, "string: "+value);
+            //Log.d(TAG, "string: "+value);
             if (coordinates==null){
                 binding.barcodeValue.setText(R.string.wrong_qr);
                 return;
@@ -61,8 +64,8 @@ public class CheckInFrag extends Fragment {
             float distance = MapUtil.getDistanceBetween(currentLocation,coordinates);
             if (distance<=200){
                 CameraUtil.getInstance().stopAnalyzer();
-                if (status==CHECK_IN) checkIn();
-                else if (status==CHECK_OUT) checkOut();
+                if (status==CHECK_IN) checkOut();
+                else if (status==CHECK_OUT) checkIn();
             }
 
         });
@@ -70,14 +73,20 @@ public class CheckInFrag extends Fragment {
 
     private void checkIn(){
         long currentTime=System.currentTimeMillis();
-        logSystem.addEnteringTime(currentTime);
+        boolean b=logSystem.addEnteringTime(currentTime);
+        Log.d(TAG, "checkIn: "+b);
         FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status,currentTime));
+        CheckInRepo.getInstance()
+                .setCheckInStatus(CHECK_IN);
     }
 
     private void checkOut() {
+        Log.d(TAG, "checkOut: ");
         long currentTime=System.currentTimeMillis();
         logSystem.addLeavingTime(currentTime);
         FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status,currentTime));
+        CheckInRepo.getInstance()
+                .setCheckInStatus(CHECK_OUT);
 
     }
 }

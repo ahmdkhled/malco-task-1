@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/welcome"
-            android:text="@{status==1?@string/welcome:@string/goodbye}"
+            android:text="@{status==2?@string/welcome:@string/goodbye}"
             tools:text="@string/welcome"
             android:textSize="22sp"
             android:textStyle="bold"
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/message"
-            android:text="@{status==1?@string/welcome_message:@string/goodbye_message}"
+            android:text="@{status==2?@string/welcome_message:@string/goodbye_message}"
             tools:text="you have checked in successfully "
             android:textSize="16sp"
             android:gravity="center_horizontal"
@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/checkout"
-            android:text='@{status==1?"check Out":"Done"}'
+            android:text='@{status==2?"check Out":"Done"}'
             tools:text='checkout'
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"

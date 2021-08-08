@@ -25,9 +25,14 @@ public class LogSystem {
      public static final int IN_CIRCLE=1;
      public static final int OUT_OF_CIRCLE=0;
      public static final int UNKNOWN=-1;
-    private static final String TAG = "LogSystem";
+     private static final String TAG = "LogSystem";
+    public static final int CHECK_IN=1;
+    public static final int CHECK_OUT=2;
+    public static final String CHECKIN_STATUS_TAG="checkin_status";
 
-     @SuppressLint("CommitPrefEdits")
+
+
+    @SuppressLint("CommitPrefEdits")
      private LogSystem(Context context) {
          gson=new Gson();
          sharedPreferences=context.getSharedPreferences("logs",Context.MODE_PRIVATE);
@@ -39,6 +44,7 @@ public class LogSystem {
     }
 
     public boolean addEnteringTime(Long enteringTime){
+        android.util.Log.d(TAG, "addEnteringTime: "+getStatus());
          if (getStatus()==IN_CIRCLE ) return false;
          setStatus(IN_CIRCLE);
          String json=sharedPreferences.getString(LOG_KEY,"");
@@ -87,6 +93,7 @@ public class LogSystem {
         if (logs==null)return new ArrayList<Log>();
         return logs;
     }
+
 
     private boolean enteredToday(){
         ArrayList<Log> logs=getLogList(print());
@@ -163,10 +170,21 @@ public class LogSystem {
         return log(todayLogs);
     }
 
+
+
     public void clear(){
 
          editor.clear();
     }
+
+    public void getLastStatus(){
+        sharedPreferences.getInt(CHECKIN_STATUS_TAG,CHECK_OUT);
+    }
+
+    public void setLastStatus(int status){
+         editor.putInt(CHECKIN_STATUS_TAG,status).commit();
+    }
+
 
     private enum DaysOfWeek{
         SATURDAY,

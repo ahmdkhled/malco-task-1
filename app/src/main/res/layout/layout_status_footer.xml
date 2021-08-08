@@ -10,6 +10,10 @@
             type="Boolean" />
 
 
+        <variable
+            name="status"
+            type="Integer"
+            />
 
     </data>
 
@@ -45,7 +49,8 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:id="@+id/check_in"
-            android:text="Check in"
+            android:text="@{status==1?@string/check_out:@string/check_in}"
+            tools:text="check in"
             android:textColor="@color/white"
             android:textAllCaps="false"
             android:background="@drawable/check_in_button"

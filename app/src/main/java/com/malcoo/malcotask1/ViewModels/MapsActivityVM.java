@@ -31,4 +31,5 @@ public class MapsActivityVM extends AndroidViewModel {
 
     }
 
+
 }

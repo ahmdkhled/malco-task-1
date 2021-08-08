@@ -17,12 +17,15 @@ import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.databinding.ActivityCheckInBinding;
 
+import static com.malcoo.malcotask1.views.MapsActivity.CHECKIN_STATUS_KEY;
+
 
 public class CheckInActivity extends AppCompatActivity {
 
     ActivityCheckInBinding binding;
     PermissionUtil permissionUtil;
     public LatLng currentLocation;
+    private int status;
     private static final String TAG = "MainActivityyy";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +35,10 @@ public class CheckInActivity extends AppCompatActivity {
 
         permissionUtil.requestCameraPermission(this);
 
-        currentLocation=getIntent().getParcelableExtra(MapsActivity.LOCATION_KEY);
-
+        Intent intent=getIntent();
+        currentLocation=intent.getParcelableExtra(MapsActivity.LOCATION_KEY);
+        status=intent.getIntExtra(CHECKIN_STATUS_KEY,2);
+        Log.d("TAGGG", " check in frag status: "+status);
 
 
     }
@@ -46,12 +51,13 @@ public class CheckInActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PermissionUtil.Camera_PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                FragmentUtils.addFrag(this,new CheckInFrag(currentLocation,CheckInFrag.CHECK_IN));
-                Log.d(TAG, "onRequestPermissionsResult: ");
+                FragmentUtils.addFrag(this,new CheckInFrag(currentLocation,status));
+                Log.d(TAG, "onRequestPermissionsResult: "+status);
             }else{
                 permissionUtil.showDialog(this,this);
             }
         }
     }
+
 
 }

@@ -1,7 +1,11 @@
 package com.malcoo.malcotask1.views;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +20,10 @@ import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Utils.FragmentUtils;
 import com.malcoo.malcotask1.Utils.LogSystem;
 import com.malcoo.malcotask1.databinding.FragCheckedInBinding;
+
+import static com.malcoo.malcotask1.Utils.LogSystem.CHECKIN_STATUS_TAG;
+import static com.malcoo.malcotask1.Utils.LogSystem.CHECK_IN;
+import static com.malcoo.malcotask1.Utils.LogSystem.CHECK_OUT;
 
 public class CheckedInFrag extends Fragment {
 
@@ -37,12 +45,17 @@ public class CheckedInFrag extends Fragment {
         // TODO: 05/08/2021 get location from location api
         currentLocation=((CheckInActivity) requireActivity()).currentLocation;
         binding.setStatus(status);
+        Log.d("TAGGG", " check in frag status: "+status);
+
         binding.time.setText(LogSystem.toTime(timeStamp));
         binding.checkout.setOnClickListener(v->{
-            if (status==CheckInFrag.CHECK_IN)
-            FragmentUtils.replaceFragment(getContext(),new CheckInFrag(currentLocation,CheckInFrag.CHECK_OUT));
-            else if (status==CheckInFrag.CHECK_OUT)
+            if (status==CHECK_OUT){
+                FragmentUtils.replaceFragment(getContext(),new CheckInFrag(currentLocation,CHECK_IN));
+            }
+            else if (status==CHECK_IN){
                 requireActivity().finish();
+
+            }
         });
 
         return binding.getRoot();
