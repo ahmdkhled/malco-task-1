@@ -177,8 +177,8 @@ public class LogSystem {
          editor.clear();
     }
 
-    public void getLastStatus(){
-        sharedPreferences.getInt(CHECKIN_STATUS_TAG,CHECK_OUT);
+    public int getLastStatus(){
+        return sharedPreferences.getInt(CHECKIN_STATUS_TAG,CHECK_OUT);
     }
 
     public void setLastStatus(int status){

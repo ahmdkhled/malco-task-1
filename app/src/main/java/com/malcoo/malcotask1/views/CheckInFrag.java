@@ -74,19 +74,19 @@ public class CheckInFrag extends Fragment {
     private void checkIn(){
         long currentTime=System.currentTimeMillis();
         boolean b=logSystem.addEnteringTime(currentTime);
-        Log.d(TAG, "checkIn: "+b);
         FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status,currentTime));
         CheckInRepo.getInstance()
                 .setCheckInStatus(CHECK_IN);
+        LogSystem.getInstance(getContext()).setLastStatus(CHECK_IN);
     }
 
     private void checkOut() {
-        Log.d(TAG, "checkOut: ");
         long currentTime=System.currentTimeMillis();
         logSystem.addLeavingTime(currentTime);
         FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status,currentTime));
         CheckInRepo.getInstance()
                 .setCheckInStatus(CHECK_OUT);
+        LogSystem.getInstance(getContext()).setLastStatus(CHECK_OUT);
 
     }
 }

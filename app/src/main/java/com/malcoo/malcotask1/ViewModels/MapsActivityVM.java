@@ -9,7 +9,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.malcoo.malcotask1.Model.Result;
+import com.malcoo.malcotask1.Repo.CheckInRepo;
 import com.malcoo.malcotask1.Repo.LocationRepo;
+import com.malcoo.malcotask1.Utils.LogSystem;
 
 public class MapsActivityVM extends AndroidViewModel {
 
@@ -29,6 +31,10 @@ public class MapsActivityVM extends AndroidViewModel {
         return LocationRepo.getInstance(getApplication().getApplicationContext())
                 .isLocationEnabled();
 
+    }
+
+    public int getLastStatus(){
+        return LogSystem.getInstance(getApplication().getApplicationContext()).getLastStatus();
     }
 
 
