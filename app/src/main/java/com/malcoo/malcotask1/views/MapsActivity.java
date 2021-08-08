@@ -1,24 +1,19 @@
 package com.malcoo.malcotask1.views;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -32,16 +27,11 @@ import com.malcoo.malcotask1.Repo.LocationRepo;
 import com.malcoo.malcotask1.Utils.LogSystem;
 import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
-import com.malcoo.malcotask1.Utils.Timer;
 import com.malcoo.malcotask1.ViewModels.MapsActivityVM;
 import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
 
-import static com.malcoo.malcotask1.Utils.LogSystem.CHECKIN_STATUS_TAG;
-import static com.malcoo.malcotask1.Utils.LogSystem.CHECK_OUT;
-
 public class MapsActivity extends FragmentActivity implements
-        OnMapReadyCallback,LocationBottomSheet.OnActivateLocationClickedListener ,
-        Timer.OnTimerFinished
+        OnMapReadyCallback,LocationBottomSheet.OnActivateLocationClickedListener
 {
     private static final String TAG = "MapsActivityyy";
     private GoogleMap mMap;
@@ -157,7 +147,6 @@ public class MapsActivity extends FragmentActivity implements
                     binding.statusFooter.setInside(true);
                     Log.d("LOG_TIME", "entering warehouse : "+logSystem.log(currentTime,null));
 
-                    Timer.getInstance(this,30000,1000).start();
                     LocationRepo.getInstance(this).stopLocationUpdate();
                 }
 
@@ -172,10 +161,7 @@ public class MapsActivity extends FragmentActivity implements
         launcher.launch(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
     }
 
-    @Override
-    public void onTimerFinished() {
-        getCurrentLocation();
-    }
+
 
 
 }
