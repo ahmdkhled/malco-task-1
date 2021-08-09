@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer;
 import com.google.android.gms.maps.model.LatLng;
 import com.malcoo.malcotask1.Model.Result;
 import com.malcoo.malcotask1.R;
+import com.malcoo.malcotask1.Repo.CheckInRepo;
 import com.malcoo.malcotask1.Repo.LocationRepo;
 import com.malcoo.malcotask1.Utils.CameraUtil;
 import com.malcoo.malcotask1.Utils.FragmentUtils;
@@ -53,9 +54,13 @@ public class CheckInActivity extends AppCompatActivity {
         LocationRepo.getInstance(this)
                 .trackLocation()
                 .observe(this, locationResult -> {
-                    currentLocation=new LatLng(locationResult.getData().getLatitude(),locationResult.getData().getLongitude());
+                    if (!locationResult.isSuccess())return;
+                    currentLocation=LocationRepo.toLatLng(locationResult.getData());
+                    CheckInRepo.getInstance().setLastLocation(currentLocation);
                     Log.d(TAG, "getCurrentLocationnn: ");
                     FragmentUtils.addFrag(this,new CheckInFrag(currentLocation,status));
+                    LocationRepo.getInstance(this).stopLocationUpdate();
+
 
                 });
     }

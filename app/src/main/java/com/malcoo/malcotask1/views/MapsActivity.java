@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -106,6 +107,17 @@ public class MapsActivity extends FragmentActivity implements
                     Log.d("TAG", "checkLocation: ");
                         getCurrentLocation();
                 });
+        CheckInRepo.getInstance().getLastLocation()
+                .observe(this, latLng -> {
+                    Log.d(TAG, "update locationn: ");
+                    coordinates=latLng;
+                    boolean inCircle=mapUtil.isInCircle(coordinates);
+                    mapUtil.addCurrentLocationMarker(mMap,coordinates);
+                    mapUtil.update(inCircle,binding);
+                    if (inCircle){
+                        binding.statusFooter.setInside(true);
+                    }
+                });
     }
 
     @SuppressLint("NewApi")
@@ -139,13 +151,8 @@ public class MapsActivity extends FragmentActivity implements
                 boolean inCircle=mapUtil.isInCircle(coordinates);
                 mapUtil.addCurrentLocationMarker(mMap,coordinates);
                 mapUtil.update(inCircle,binding);
-
-                Log.d("Timer", "getCurrentLocation: called "+inCircle);
-                long currentTime=System.currentTimeMillis();
                 if (inCircle){
                     binding.statusFooter.setInside(true);
-                    Log.d("LOG_TIME", "entering warehouse : "+logSystem.log(currentTime,null));
-
                     LocationRepo.getInstance(this).stopLocationUpdate();
                 }
 
