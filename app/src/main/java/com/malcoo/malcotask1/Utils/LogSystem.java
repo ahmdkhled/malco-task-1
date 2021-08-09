@@ -178,7 +178,7 @@ public class LogSystem {
     }
 
     public int getLastStatus(){
-        return sharedPreferences.getInt(CHECKIN_STATUS_TAG,CHECK_OUT);
+        return sharedPreferences.getInt(CHECKIN_STATUS_TAG,-1);
     }
 
     public void setLastStatus(int status){

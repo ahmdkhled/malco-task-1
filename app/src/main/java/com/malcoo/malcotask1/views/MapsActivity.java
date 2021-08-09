@@ -42,7 +42,6 @@ public class MapsActivity extends FragmentActivity implements
     LogSystem logSystem;
     ActivityMapsBinding binding;
     LatLng coordinates;
-    public static final String LOCATION_KEY="location_key";
     public static final String CHECKIN_STATUS_KEY="checkin_key";
     private int checkInStatus;
     // random warehouse coordinates outside circle
@@ -67,7 +66,8 @@ public class MapsActivity extends FragmentActivity implements
         permissionUtil.requestPermission(this);
         checkLocation();
         checkInStatus=mapsActivityVM.getLastStatus();
-
+        binding.statusFooter.setStatus(checkInStatus);
+        Log.d(TAG, "last status: "+checkInStatus);
         CheckInRepo.getInstance()
                 .getCheckInStatus()
                 .observe(this, status -> {
@@ -79,7 +79,6 @@ public class MapsActivity extends FragmentActivity implements
         binding.statusFooter.checkIn.setOnClickListener(v->{
 
             Intent intent=new Intent(this,CheckInActivity.class);
-            intent.putExtra(LOCATION_KEY,coordinates);
             intent.putExtra(CHECKIN_STATUS_KEY,checkInStatus);
             startActivity(intent);
         });

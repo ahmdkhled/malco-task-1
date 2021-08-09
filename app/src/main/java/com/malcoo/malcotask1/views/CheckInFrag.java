@@ -54,6 +54,7 @@ public class CheckInFrag extends Fragment {
         CameraUtil.getInstance().startCamera(getContext(),this,binding.previewView);
         CameraUtil.getInstance().setOnBarcodeScannedListener(barcode -> {
             String value=barcode.getRawValue();
+
             Log.d("BAR_CODE", "result : "+barcode.getRawValue());
             LatLng coordinates= MapUtil.getCoordinates(value);
             //Log.d(TAG, "string: "+value);
@@ -62,10 +63,13 @@ public class CheckInFrag extends Fragment {
                 return;
             }
             float distance = MapUtil.getDistanceBetween(currentLocation,coordinates);
+            Log.d(TAG, "distsance: "+distance);
             if (distance<=200){
                 CameraUtil.getInstance().stopAnalyzer();
                 if (status==CHECK_IN) checkOut();
                 else if (status==CHECK_OUT) checkIn();
+            }else {
+                Log.d(TAG, "distsance: you are out of circle man");
             }
 
         });
