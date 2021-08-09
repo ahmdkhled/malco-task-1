@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.snackbar.Snackbar;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Repo.CheckInRepo;
 import com.malcoo.malcotask1.Utils.CameraUtil;
@@ -70,6 +71,9 @@ public class CheckInFrag extends Fragment {
                 else if (status==CHECK_OUT) checkIn();
             }else {
                 Log.d(TAG, "distsance: you are out of circle man");
+                Snackbar.make(getView(),"you are away from warehouse ",Snackbar.LENGTH_LONG)
+                        .show();
+                CameraUtil.lastValue="";
             }
 
         });

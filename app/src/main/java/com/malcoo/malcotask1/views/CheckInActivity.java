@@ -41,6 +41,7 @@ public class CheckInActivity extends AppCompatActivity {
 
         Intent intent=getIntent();
         status=intent.getIntExtra(CHECKIN_STATUS_KEY,2);
+
         Log.d("TAGGG", " check in frag status: "+status);
 
 
