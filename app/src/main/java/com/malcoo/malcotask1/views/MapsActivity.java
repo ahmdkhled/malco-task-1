@@ -105,6 +105,7 @@ public class MapsActivity extends FragmentActivity implements
         CheckInRepo.getInstance().getLastLocation()
                 .observe(this, latLng -> {
                     coordinates=latLng;
+                    mapUtil.clearLastMarker();
                     mapUtil.addCurrentLocationMarker(mMap,coordinates);
                     binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
                     binding.statusFooter.setInside(true);

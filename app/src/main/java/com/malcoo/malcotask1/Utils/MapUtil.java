@@ -16,14 +16,18 @@ import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
 
 public class MapUtil {
     Circle circle;
+    Marker lastMarker;
 
-    public Marker addCurrentLocationMarker(GoogleMap mMap, LatLng coordinates){
-        Marker marker=mMap.addMarker(new MarkerOptions().position(coordinates)
+    public void addCurrentLocationMarker(GoogleMap mMap, LatLng coordinates){
+        lastMarker=mMap.addMarker(new MarkerOptions().position(coordinates)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
         mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(coordinates, 12f));
-        return marker;
+
     }
 
+    public void clearLastMarker(){
+        lastMarker.remove();
+    }
 
 
     //function to add circle surrounding plcaes like ware house
