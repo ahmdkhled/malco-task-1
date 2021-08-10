@@ -10,5 +10,7 @@
     <string name="goodbye_message">you have checked out successfully  </string>
     <string name="check_in">Check in</string>
     <string name="check_out">Check out</string>
+    <string name="inside_circle_message">you are inside the circle</string>
+    <string name="outside_circle_message">you are outside the circle</string>
 
 </resources>

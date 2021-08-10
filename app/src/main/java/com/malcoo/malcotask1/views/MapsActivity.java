@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -104,12 +105,10 @@ public class MapsActivity extends FragmentActivity implements
         CheckInRepo.getInstance().getLastLocation()
                 .observe(this, latLng -> {
                     coordinates=latLng;
-                    boolean inCircle=mapUtil.isInCircle(coordinates);
                     mapUtil.addCurrentLocationMarker(mMap,coordinates);
-                    mapUtil.update(inCircle,binding);
-                    if (inCircle){
-                        binding.statusFooter.setInside(true);
-                    }
+                    binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
+                    binding.statusFooter.setInside(true);
+
                 });
     }
 
@@ -140,9 +139,9 @@ public class MapsActivity extends FragmentActivity implements
 
                 boolean inCircle=mapUtil.isInCircle(coordinates);
                 mapUtil.addCurrentLocationMarker(mMap,coordinates);
-                mapUtil.update(inCircle,binding);
+                binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
+                binding.statusFooter.setInside(inCircle);
                 if (inCircle){
-                    binding.statusFooter.setInside(true);
                     LocationRepo.getInstance(this).stopLocationUpdate();
                 }
 

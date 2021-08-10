@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:background="@color/red"
+        android:background="@{inside?@color/green:@color/red}"
         tools:background="@color/green"
 
         >
@@ -38,6 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/status"
+            android:text="@{inside?@string/inside_circle_message:@string/outside_circle_message}"
             tools:text="you are outside of circle "
             android:textColor="#fff"
             app:layout_constraintStart_toEndOf="@id/icon"
@@ -57,7 +58,6 @@
             android:enabled="@{inside}"
             android:visibility='@{inside?0:8}'
             android:drawableStart="@drawable/ic_baseline_done_24"
-
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

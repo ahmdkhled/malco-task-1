@@ -24,11 +24,7 @@ public class MapUtil {
         return marker;
     }
 
-    public void update(boolean inCircle, ActivityMapsBinding binding){
-        binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
-        binding.statusFooter.status.setText(getMessage(inCircle));
-        binding.statusFooter.getRoot().setBackgroundResource(getColor(inCircle));
-    }
+
 
     //function to add circle surrounding plcaes like ware house
     public void drawCircle(double radius,LatLng place, GoogleMap map){
@@ -68,13 +64,5 @@ public class MapUtil {
         }
         return null;
     }
-    //todo use databinding instead
-    public String getMessage(boolean inCircle){
-        if (inCircle) return "you are inside the circle";
-        return "you are outside the circle";
-    }
-    public int getColor(boolean inCircle){
-        if (inCircle) return R.color.green;
-        return R.color.red;
-    }
+
 }
