@@ -2,7 +2,6 @@ package com.malcoo.malcotask1.Utils;
 
 import android.content.Context;
 import android.util.Log;
-
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
@@ -11,11 +10,9 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
-
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
@@ -26,7 +23,6 @@ public class CameraUtil {
     ImageAnalysis imageAnalysis;
     BarcodeAnalyzer.OnBarcodeScannedListener onBarcodeScannedListener;
     public static String lastValue="";
-
     private static final String TAG = "CameraUtil";
 
     public static CameraUtil getInstance(){
@@ -66,9 +62,6 @@ public class CameraUtil {
                         imageCapture,
                         imageAnalysis
                 );
-
-
-
             }, cameraExecutor);
 
 

@@ -1,11 +1,8 @@
 package com.malcoo.malcotask1.Utils;
 
-import android.app.Activity;
 import android.content.Context;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-
 import com.malcoo.malcotask1.R;
 
 public class FragmentUtils {

@@ -42,11 +42,6 @@ public class CheckInActivity extends AppCompatActivity {
 
         Intent intent=getIntent();
         status=intent.getIntExtra(CHECKIN_STATUS_KEY,2);
-
-        Log.d("TAGGG", " check in frag status: "+status);
-
-
-
     }
 
 
@@ -57,7 +52,6 @@ public class CheckInActivity extends AppCompatActivity {
                     if (!locationResult.isSuccess())return;
                     currentLocation=LocationRepo.toLatLng(locationResult.getData());
                     CheckInRepo.getInstance().setLastLocation(currentLocation);
-                    Log.d(TAG, "getCurrentLocationnn: ");
                     FragmentUtils.addFrag(this,new CheckInFrag(currentLocation,status));
                     LocationRepo.getInstance(this).stopLocationUpdate();
 
@@ -70,7 +64,6 @@ public class CheckInActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PermissionUtil.Camera_PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: "+status);
                 getCurrentLocation();
             }else{
                 permissionUtil.showDialog(this,this);

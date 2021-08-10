@@ -44,7 +44,6 @@ public class LogSystem {
     }
 
     public boolean addEnteringTime(Long enteringTime){
-        android.util.Log.d(TAG, "addEnteringTime: "+getStatus());
          if (getStatus()==IN_CIRCLE ) return false;
          setStatus(IN_CIRCLE);
          String json=sharedPreferences.getString(LOG_KEY,"");
@@ -54,7 +53,6 @@ public class LogSystem {
          logs.add(log);
          String newJson=toJson(logs);
          editor.putString(LOG_KEY,newJson).apply();
-         android.util.Log.d(TAG, "addEnteringTime: "+print());
         return true;
 
     }
@@ -71,7 +69,6 @@ public class LogSystem {
             log.setLeavingTime(leavingTime);
             logs.set(logs.size()-1,log);
             editor.putString(LOG_KEY,toJson(logs)).apply();
-            android.util.Log.d(TAG, "addLeavingTime: ");
             return log.getEnteringTime();
         }
     }

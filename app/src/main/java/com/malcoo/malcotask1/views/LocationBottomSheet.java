@@ -4,11 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.databinding.LayoutLocationBottonsheetBinding;

@@ -16,14 +16,9 @@ import com.google.mlkit.vision.common.InputImage;
 
 public class BarcodeAnalyzer implements ImageAnalysis.Analyzer {
 
-    private static final String TAG = "BarcodeAnalyzer";
-
     BarcodeScanner scanner;
     OnBarcodeScannedListener onBarcodeScannedListener;
-
-    public BarcodeAnalyzer(BarcodeScanner scanner) {
-        this.scanner = scanner;
-    }
+    private static final String TAG = "BarcodeAnalyzer";
 
     public BarcodeAnalyzer(BarcodeScanner scanner, OnBarcodeScannedListener onBarcodeScannedListener) {
         this.scanner = scanner;
@@ -38,20 +33,12 @@ public class BarcodeAnalyzer implements ImageAnalysis.Analyzer {
             scanner.process(image)
                     .addOnSuccessListener(barcodes -> {
                         if (!barcodes.isEmpty()){
-                            Log.d(TAG, "analyze: success "+barcodes.get(0).getRawValue() +" ------- > "+CameraUtil.lastValue);
                             String value=barcodes.get(0).getRawValue();
                             if (value!=null&&!value.equals(CameraUtil.lastValue)){
                                 onBarcodeScannedListener.oBarcodeScanned(barcodes.get(0));
                                 CameraUtil.lastValue=value;
-                                Log.d(TAG, "got one : "+barcodes.get(0).getRawValue());
                             }
                         }
-
-
-
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.d(TAG, "analyze: "+e.getMessage());
                     })
                     .addOnCompleteListener(task -> imageProxy.close()) ;
         }

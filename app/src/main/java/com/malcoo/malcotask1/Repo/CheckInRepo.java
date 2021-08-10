@@ -1,7 +1,6 @@
 package com.malcoo.malcotask1.Repo;
 
 import androidx.lifecycle.MutableLiveData;
-
 import com.google.android.gms.maps.model.LatLng;
 
 public class CheckInRepo {

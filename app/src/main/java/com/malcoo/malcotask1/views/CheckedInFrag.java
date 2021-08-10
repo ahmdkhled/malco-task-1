@@ -1,27 +1,20 @@
 package com.malcoo.malcotask1.views;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Utils.FragmentUtils;
 import com.malcoo.malcotask1.Utils.LogSystem;
 import com.malcoo.malcotask1.databinding.FragCheckedInBinding;
 
-import static com.malcoo.malcotask1.Utils.LogSystem.CHECKIN_STATUS_TAG;
 import static com.malcoo.malcotask1.Utils.LogSystem.CHECK_IN;
 import static com.malcoo.malcotask1.Utils.LogSystem.CHECK_OUT;
 

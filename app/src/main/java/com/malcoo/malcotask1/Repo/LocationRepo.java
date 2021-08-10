@@ -4,17 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.malcoo.malcotask1.BuildConfig;
 import com.malcoo.malcotask1.Model.Result;
 
 
@@ -25,9 +21,6 @@ public class LocationRepo {
     MutableLiveData<Result<Location>> locationData=new MutableLiveData<>();
 
     LocationCallback locationCallback;
-
-    public static final String TRANSITIONS_RECEIVER_ACTION =
-            BuildConfig.APPLICATION_ID + "TRANSITIONS_RECEIVER_ACTION";
 
     private LocationRepo(Context context) {
         this.context = context;
@@ -55,7 +48,6 @@ public class LocationRepo {
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 locationData.setValue(Result.SUCCESS(locationResult.getLastLocation()));
-                Log.d("trackLocation", "Timer: in repo"+locationData.getValue());
             }
 
 

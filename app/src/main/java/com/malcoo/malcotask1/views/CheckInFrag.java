@@ -1,16 +1,13 @@
 package com.malcoo.malcotask1.views;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
 import com.malcoo.malcotask1.R;
@@ -46,8 +43,6 @@ public class CheckInFrag extends Fragment {
         logSystem=LogSystem.getInstance(getContext());
         observeQrCode();
 
-
-        Log.d(TAG, " checked in frag status : "+status);
         return binding.getRoot();
     }
 
@@ -56,21 +51,17 @@ public class CheckInFrag extends Fragment {
         CameraUtil.getInstance().setOnBarcodeScannedListener(barcode -> {
             String value=barcode.getRawValue();
 
-            Log.d("BAR_CODE", "result : "+barcode.getRawValue());
             LatLng coordinates= MapUtil.getCoordinates(value);
-            //Log.d(TAG, "string: "+value);
             if (coordinates==null){
                 binding.barcodeValue.setText(R.string.wrong_qr);
                 return;
             }
             float distance = MapUtil.getDistanceBetween(currentLocation,coordinates);
-            Log.d(TAG, "distsance: "+distance);
             if (distance<=200){
                 CameraUtil.getInstance().stopAnalyzer();
                 if (status==CHECK_IN) checkOut();
                 else if (status==CHECK_OUT) checkIn();
             }else {
-                Log.d(TAG, "distsance: you are out of circle man");
                 Snackbar.make(getView(),"you are away from warehouse ",Snackbar.LENGTH_LONG)
                         .show();
                 CameraUtil.lastValue="";
