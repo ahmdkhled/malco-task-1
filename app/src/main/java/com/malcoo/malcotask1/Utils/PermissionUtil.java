@@ -13,37 +13,34 @@ public class PermissionUtil {
     public static final int PERMISSION_ID = 120;
     public static final int Camera_PERMISSION_ID = 122;
 
+    // request location permission fro getting user current location
     public void requestPermission(Activity activity) {
         String[] permissions = {
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACTIVITY_RECOGNITION
         };
-
         ActivityCompat.requestPermissions(
                 activity, permissions
                 , PERMISSION_ID
         );
     }
 
-    public boolean permissionGranted(Context context) {
-        return ContextCompat.checkSelfPermission(
-                context, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED;
-    }
 
+    // request camera permission for barcode reader
     public void requestCameraPermission(Activity activity){
-
         String[] permissions = {
                 Manifest.permission.CAMERA,
-
         };
-
         ActivityCompat.requestPermissions(
                 activity, permissions
                 , Camera_PERMISSION_ID
         );
     }
 
+    /* dialog to show to user when he deny to accept permissions
+    * if he accept permissions dialog appear again
+    * if insist on denying app will close
+    * */
     public void showDialog(Context context,Activity activity){
         AlertDialog dialog=new AlertDialog.Builder(context)
                 .setCancelable(false)

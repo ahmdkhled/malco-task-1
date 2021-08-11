@@ -35,6 +35,7 @@ public class LocationRepo {
 
 
 
+    // start location tracking
     @SuppressLint("MissingPermission")
     public MutableLiveData<Result<Location>>  trackLocation(){
 
@@ -58,6 +59,7 @@ public class LocationRepo {
 
     }
 
+    // check if location is enabled
     public Boolean isLocationEnabled() {
         LocationManager locationManager =
                 (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -72,6 +74,7 @@ public class LocationRepo {
                 .removeLocationUpdates(locationCallback);
     }
 
+    //convert location into LatLng coordinates
     static public LatLng toLatLng(Location location){
         return new LatLng(location.getLatitude(),location.getLongitude());
     }

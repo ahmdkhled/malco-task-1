@@ -39,10 +39,17 @@ public class LogSystem {
          editor=sharedPreferences.edit();
      }
 
+     //singleton pattern
      public static LogSystem getInstance(Context context){
         return logSystem==null?logSystem=new LogSystem(context):logSystem;
     }
 
+    // get log as json string from shared preferences
+    public String print(){
+        return sharedPreferences.getString(LOG_KEY,"");
+    }
+
+    // record entering time as timestamp
     public boolean addEnteringTime(Long enteringTime){
          if (getStatus()==IN_CIRCLE ) return false;
          setStatus(IN_CIRCLE);
@@ -56,6 +63,7 @@ public class LogSystem {
         return true;
 
     }
+    // record leaving time as timestamp
     public long addLeavingTime(Long leavingTime){
          if (getStatus()==OUT_OF_CIRCLE)return -1;
          setStatus(OUT_OF_CIRCLE);
@@ -73,6 +81,7 @@ public class LogSystem {
         }
     }
 
+    // store status if he is inside circle or not
     public void setStatus(int status){
          editor.putInt(STATUS_KEY,status).apply();
     }
@@ -81,43 +90,31 @@ public class LogSystem {
          return sharedPreferences.getInt(STATUS_KEY,UNKNOWN);
     }
 
+    // convert list of log  to json string
     private String toJson(ArrayList<Log> log){
          return gson.toJson(log);
     }
 
+    //convert json string to list of log
     private ArrayList<Log> getLogList(String json){
         ArrayList<Log> logs= gson.fromJson(json,new TypeToken<ArrayList<Log>>(){}.getType());
         if (logs==null)return new ArrayList<Log>();
         return logs;
     }
 
-
-    private boolean enteredToday(){
-        ArrayList<Log> logs=getLogList(print());
-        if (logs==null||logs.isEmpty()){
-            return false;
-        }
-        for (Log log:logs){
-            String enteringDay=toDate(log.getEnteringTime());
-            String currentDay=toDate(System.currentTimeMillis());
-            if (enteringDay.equals(currentDay))return true;
-        }
-
-        return false;
-    }
-
+    //convert timestamp to date
     private String toDate(long timestamp){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp);
         return DateFormat.format("dd-MM-yyyy", cal).toString();
     }
 
+    //convert timestamp to time
     public static String toTime(long timeStamp){
-
         return new SimpleDateFormat("hh:mm:ss a").format(new Date(timeStamp));
-
     }
 
+    // print one log of entering and leaving time
     public String log(long enteringTimeStamp, Long leavingTimeStamp){
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(enteringTimeStamp);
@@ -131,10 +128,8 @@ public class LogSystem {
 
     }
 
-    public String print(){
-        return sharedPreferences.getString(LOG_KEY,"");
-    }
 
+    //print whole user's log (entering time => leaving time)
     @SafeVarargs
     public final String log(ArrayList<Log>... logsList){
          ArrayList<Log> logs=new ArrayList<>();
@@ -153,7 +148,7 @@ public class LogSystem {
          return stringBuilder.toString();
     }
 
-
+    //read the today's only user attendance log
     public String logToday(){
         ArrayList<Log> logs=getLogList(print());
         ArrayList<Log> todayLogs=new ArrayList<>();
@@ -167,31 +162,19 @@ public class LogSystem {
         return log(todayLogs);
     }
 
-
-
-    public void clear(){
-
-         editor.clear();
-    }
+    public void clear(){ editor.clear(); }
 
     public int getLastStatus(){
         return sharedPreferences.getInt(CHECKIN_STATUS_TAG,-1);
     }
-
+    //save the last user status if he checked in or checked out
     public void setLastStatus(int status){
          editor.putInt(CHECKIN_STATUS_TAG,status).commit();
     }
 
 
     private enum DaysOfWeek{
-        SATURDAY,
-        SUNDAY,
-         MONDAY,
-        TUESDAY,
-        WEDNESDAY,
-        THURSDAY,
-        FRIDAY
-
+        SATURDAY, SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
     }
 
 }

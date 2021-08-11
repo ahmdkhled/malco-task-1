@@ -29,6 +29,7 @@ public class CameraUtil {
         return cameraUtil==null?cameraUtil=new CameraUtil():cameraUtil;
     }
 
+    // start camera scanning to read qr code
     public void startCamera(Context context, LifecycleOwner owner, PreviewView previewView){
 
             CameraUtil.lastValue="";
@@ -67,6 +68,8 @@ public class CameraUtil {
 
 
     }
+
+    // stop qr scanner process after getting needed value
     public void stopAnalyzer(){
         scanner.close();
         imageAnalysis.clearAnalyzer();

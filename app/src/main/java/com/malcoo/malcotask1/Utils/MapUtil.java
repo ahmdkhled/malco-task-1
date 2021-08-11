@@ -18,6 +18,7 @@ public class MapUtil {
     Circle circle;
     Marker lastMarker;
 
+    // add marker to google map
     public void addCurrentLocationMarker(GoogleMap mMap, LatLng coordinates){
         lastMarker=mMap.addMarker(new MarkerOptions().position(coordinates)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
@@ -25,6 +26,7 @@ public class MapUtil {
 
     }
 
+    // delete old marker from map view
     public void clearLastMarker(){
         lastMarker.remove();
     }
@@ -41,6 +43,7 @@ public class MapUtil {
         circle=map.addCircle(circleOptions);
     }
 
+    // check if user is inside the radius of circle
     public boolean isInCircle(LatLng location){
         float[] distance=new float[2];
         Location.distanceBetween( location.latitude, location.longitude,
@@ -49,6 +52,7 @@ public class MapUtil {
 
     }
 
+    //get distance between two  LatLng coordinates (current location and warehouse)
     public static float getDistanceBetween(LatLng Currentlocation,LatLng destination){
         float[] distance=new float[2];
          Location.distanceBetween( Currentlocation.latitude, Currentlocation.longitude,
@@ -56,6 +60,7 @@ public class MapUtil {
          return distance[0];
     }
 
+    // convert qr string value to lat and lng by splitting it
     public static LatLng getCoordinates(String coordinatesString){
         if (coordinatesString==null) return null;
         if (coordinatesString.contains(",")){

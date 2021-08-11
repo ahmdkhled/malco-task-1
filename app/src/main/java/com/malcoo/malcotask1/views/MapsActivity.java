@@ -76,7 +76,6 @@ public class MapsActivity extends FragmentActivity implements
                 });
 
         binding.statusFooter.checkIn.setOnClickListener(v->{
-
             Intent intent=new Intent(this,CheckInActivity.class);
             intent.putExtra(CHECKIN_STATUS_KEY,checkInStatus);
             startActivity(intent);
@@ -102,6 +101,7 @@ public class MapsActivity extends FragmentActivity implements
                 result -> {
                         getCurrentLocation();
                 });
+        //update last location with the new checkout location
         CheckInRepo.getInstance().getLastLocation()
                 .observe(this, latLng -> {
                     coordinates=latLng;
@@ -117,7 +117,6 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == PermissionUtil.PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentLocation();
