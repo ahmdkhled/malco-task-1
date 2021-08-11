@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
 
@@ -50,6 +51,17 @@ public class MapUtil {
         circleOptions.fillColor(0x30000000);
         circleOptions.strokeWidth(1);
         circle=map.addCircle(circleOptions);
+    }
+
+    public void drawPollyLine(GoogleMap map,LatLng currentLocation,LatLng destination){
+        PolylineOptions options = new PolylineOptions();
+
+        options.color( Color.parseColor("#FF38759E"));
+        options.width( 20 );
+        options.visible( true );
+        options.add(currentLocation);
+        options.add(destination);
+        map.addPolyline(options);
     }
 
     // check if user is inside the radius of circle

@@ -135,6 +135,7 @@ public class MapsActivity extends FragmentActivity implements
                 Log.d(TAG, "getCurrentLocation: "+coordinates);
                 boolean inCircle=mapUtil.isInCircle(coordinates);
                 mapUtil.addCurrentLocationMarker(mMap,coordinates);
+                mapUtil.drawPollyLine(mMap,coordinates,warehouse);
                 binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
                 binding.statusFooter.setInside(inCircle);
             }else {
