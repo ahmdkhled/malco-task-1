@@ -15,22 +15,22 @@ import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
 
 public class MapUtil {
-    private static MapUtil mapUtil;
     Circle circle;
     Marker lastMarker;
 
-    private MapUtil() {
-    }
 
-    public static MapUtil getInstance(){
-        return mapUtil==null?mapUtil=new MapUtil():mapUtil;
-    }
 
     // add marker to google map
-    public void addCurrentLocationMarker(GoogleMap mMap, LatLng coordinates){
+    public void addCurrentLocationMarker(GoogleMap mMap, LatLng coordinates,String... title){
         if (lastMarker!=null) lastMarker.remove();
-        lastMarker=mMap.addMarker(new MarkerOptions().position(coordinates)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+        MarkerOptions markerOptions=new MarkerOptions();
+        markerOptions.position(coordinates);
+        if (title.length>0)
+        markerOptions.title(title[0]);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+        lastMarker=mMap.addMarker(markerOptions);
+
+
         mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(coordinates, 12f));
 
     }

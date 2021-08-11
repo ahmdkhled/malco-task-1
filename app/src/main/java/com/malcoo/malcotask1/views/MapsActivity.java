@@ -40,7 +40,7 @@ public class MapsActivity extends FragmentActivity implements
     private GoogleMap mMap;
     private MapsActivityVM mapsActivityVM;
     ActivityResultLauncher<Intent> launcher;
-    MapUtil mapUtil=MapUtil.getInstance();
+    MapUtil mapUtil=new MapUtil();
     PermissionUtil permissionUtil;
     LogSystem logSystem;
     ActivityMapsBinding binding;
@@ -94,7 +94,7 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onMapReady( GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.addMarker(new MarkerOptions().title("ware house").position(warehouse));
+        mMap.addMarker(new MarkerOptions().title("Warehouse").position(warehouse)).showInfoWindow();
         // dynamic radius as required
         mapUtil.drawCircle(500,warehouse,mMap);
     }
