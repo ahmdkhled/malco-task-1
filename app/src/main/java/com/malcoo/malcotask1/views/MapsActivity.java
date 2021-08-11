@@ -104,6 +104,7 @@ public class MapsActivity extends FragmentActivity implements
         //update last location with the new checkout location
         CheckInRepo.getInstance().getLastLocation()
                 .observe(this, latLng -> {
+                    Log.d(TAG, "checkLocation: "+latLng);
                     coordinates=latLng;
                     mapUtil.clearLastMarker();
                     mapUtil.addCurrentLocationMarker(mMap,coordinates);

@@ -62,9 +62,7 @@ public class CheckInFrag extends Fragment {
                 if (status==CHECK_IN) checkOut();
                 else if (status==CHECK_OUT) checkIn();
             }else {
-                Snackbar.make(getView(),"you are away from warehouse ",Snackbar.LENGTH_LONG)
-                        .show();
-                CameraUtil.lastValue="";
+                binding.barcodeValue.setText(R.string.away_from_warehouse);
             }
 
         });

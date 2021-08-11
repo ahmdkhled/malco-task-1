@@ -12,5 +12,6 @@
     <string name="check_out">Check out</string>
     <string name="inside_circle_message">you are inside the circle</string>
     <string name="outside_circle_message">you are outside the circle</string>
+    <string name="away_from_warehouse">you are away from warehouse</string>
 
 </resources>

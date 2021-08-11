@@ -49,7 +49,9 @@ public class CheckInActivity extends AppCompatActivity {
         LocationRepo.getInstance(this)
                 .trackLocation()
                 .observe(this, locationResult -> {
-                    if (!locationResult.isSuccess())return;
+                    if (!locationResult.isSuccess()){
+                        Log.d(TAG, "getCurrentLocation: nulllllll");
+                        return;}
                     currentLocation=LocationRepo.toLatLng(locationResult.getData());
                     CheckInRepo.getInstance().setLastLocation(currentLocation);
                     FragmentUtils.addFrag(this,new CheckInFrag(currentLocation,status));
