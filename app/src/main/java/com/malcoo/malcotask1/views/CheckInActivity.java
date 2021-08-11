@@ -23,6 +23,7 @@ import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.databinding.ActivityCheckInBinding;
 
 import static com.malcoo.malcotask1.views.MapsActivity.CHECKIN_STATUS_KEY;
+import static com.malcoo.malcotask1.views.MapsActivity.LOCATION_KEY;
 
 
 public class CheckInActivity extends AppCompatActivity {
@@ -42,31 +43,18 @@ public class CheckInActivity extends AppCompatActivity {
 
         Intent intent=getIntent();
         status=intent.getIntExtra(CHECKIN_STATUS_KEY,2);
+        currentLocation=intent.getParcelableExtra(LOCATION_KEY);
     }
 
 
-    private void getCurrentLocation(){
-        LocationRepo.getInstance(this)
-                .trackLocation()
-                .observe(this, locationResult -> {
-                    if (!locationResult.isSuccess()){
-                        Log.d(TAG, "getCurrentLocation: nulllllll");
-                        return;}
-                    currentLocation=LocationRepo.toLatLng(locationResult.getData());
-                    CheckInRepo.getInstance().setLastLocation(currentLocation);
-                    FragmentUtils.addFrag(this,new CheckInFrag(currentLocation,status));
-                    LocationRepo.getInstance(this).stopLocationUpdate();
-
-
-                });
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PermissionUtil.Camera_PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocation();
+                FragmentUtils.addFrag(this,new CheckInFrag(currentLocation,status));
+
             }else{
                 permissionUtil.showDialog(this,this);
             }

@@ -31,6 +31,8 @@ import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.ViewModels.MapsActivityVM;
 import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
 
+import java.util.Map;
+
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,LocationBottomSheet.OnActivateLocationClickedListener
 {
@@ -38,11 +40,12 @@ public class MapsActivity extends FragmentActivity implements
     private GoogleMap mMap;
     private MapsActivityVM mapsActivityVM;
     ActivityResultLauncher<Intent> launcher;
-    MapUtil mapUtil=new MapUtil();
+    MapUtil mapUtil=MapUtil.getInstance();
     PermissionUtil permissionUtil;
     LogSystem logSystem;
     ActivityMapsBinding binding;
     LatLng coordinates;
+    public static final String LOCATION_KEY="location_key";
     public static final String CHECKIN_STATUS_KEY="checkin_key";
     private int checkInStatus;
     // random warehouse coordinates outside circle
@@ -78,6 +81,7 @@ public class MapsActivity extends FragmentActivity implements
         binding.statusFooter.checkIn.setOnClickListener(v->{
             Intent intent=new Intent(this,CheckInActivity.class);
             intent.putExtra(CHECKIN_STATUS_KEY,checkInStatus);
+            intent.putExtra(LOCATION_KEY,coordinates);
             startActivity(intent);
         });
 
@@ -101,17 +105,7 @@ public class MapsActivity extends FragmentActivity implements
                 result -> {
                         getCurrentLocation();
                 });
-        //update last location with the new checkout location
-        CheckInRepo.getInstance().getLastLocation()
-                .observe(this, latLng -> {
-                    Log.d(TAG, "checkLocation: "+latLng);
-                    coordinates=latLng;
-                    mapUtil.clearLastMarker();
-                    mapUtil.addCurrentLocationMarker(mMap,coordinates);
-                    binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
-                    binding.statusFooter.setInside(true);
 
-                });
     }
 
     @SuppressLint("NewApi")
@@ -126,8 +120,9 @@ public class MapsActivity extends FragmentActivity implements
             }
         }
     }
-
+    int i=0;
     private void getCurrentLocation(){
+
         if (!mapsActivityVM.isLocationEnabled()){
             new LocationBottomSheet(this)
                     .show(getSupportFragmentManager(),"");
@@ -137,15 +132,11 @@ public class MapsActivity extends FragmentActivity implements
             Location location=latLngResult.getData();
             if (latLngResult.isSuccess()&&location!=null){
                 coordinates=LocationRepo.toLatLng(location);
-
+                Log.d(TAG, "getCurrentLocation: "+coordinates);
                 boolean inCircle=mapUtil.isInCircle(coordinates);
                 mapUtil.addCurrentLocationMarker(mMap,coordinates);
                 binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
                 binding.statusFooter.setInside(inCircle);
-                if (inCircle){
-                    LocationRepo.getInstance(this).stopLocationUpdate();
-                }
-
             }else {
                 Toast.makeText(this, "failed to get Location", Toast.LENGTH_SHORT).show();
             }

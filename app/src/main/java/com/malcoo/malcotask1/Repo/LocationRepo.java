@@ -4,8 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -14,11 +17,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.malcoo.malcotask1.Model.Result;
 
 
-public class LocationRepo {
+public class LocationRepo  {
 
     Context context;
     private static LocationRepo locationRepo;
-    MutableLiveData<Result<Location>> locationData=new MutableLiveData<>();
+    MutableLiveData<Result<Location>> locationData;
 
     LocationCallback locationCallback;
 
@@ -34,11 +37,11 @@ public class LocationRepo {
     }
 
 
-
     // start location tracking
     @SuppressLint("MissingPermission")
     public MutableLiveData<Result<Location>>  trackLocation(){
-
+        Log.d("TAGGGGG", "trackLocation: ");
+        locationData=new MutableLiveData<>();
         LocationRequest locationRequest=LocationRequest.create();
         locationRequest.setInterval(5000); // 5 seconds just for testing
         locationRequest.setFastestInterval(5000);
@@ -48,10 +51,9 @@ public class LocationRepo {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
+                Log.d("TAGGGGG", "onLocationResult: ");
                 locationData.setValue(Result.SUCCESS(locationResult.getLastLocation()));
             }
-
-
         };
         LocationServices.getFusedLocationProviderClient(context)
                 .requestLocationUpdates(locationRequest,locationCallback,null);

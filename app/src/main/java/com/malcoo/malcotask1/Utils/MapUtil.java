@@ -15,11 +15,20 @@ import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
 
 public class MapUtil {
+    private static MapUtil mapUtil;
     Circle circle;
     Marker lastMarker;
 
+    private MapUtil() {
+    }
+
+    public static MapUtil getInstance(){
+        return mapUtil==null?mapUtil=new MapUtil():mapUtil;
+    }
+
     // add marker to google map
     public void addCurrentLocationMarker(GoogleMap mMap, LatLng coordinates){
+        if (lastMarker!=null) lastMarker.remove();
         lastMarker=mMap.addMarker(new MarkerOptions().position(coordinates)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
         mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(coordinates, 12f));
@@ -72,6 +81,23 @@ public class MapUtil {
             }catch (Exception e){ return  null; }
         }
         return null;
+    }
+
+    // fake route for testing
+    public static LatLng[] getFakeRoute(){
+
+        return new LatLng[]{
+                new LatLng(30.0780708,31.3228058),
+                new LatLng(30.0560173,31.3169771),
+                new LatLng(30.0752362,31.309582),
+                new LatLng(30.0752362,31.3095829),
+                new LatLng(30.0758615,31.3085954),
+                new LatLng(30.0758615,31.3085954),
+                new LatLng(30.0768828,31.3107631),
+                new LatLng(30.0791337,31.3132559),
+                new LatLng(30.0801342,31.3155079),
+                new LatLng(30.0812388,31.3170975),
+        };
     }
 
 }

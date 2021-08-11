@@ -24,13 +24,7 @@ public class CheckInRepo {
         return checkInStatus;
     }
 
-    public MutableLiveData<LatLng> getLastLocation() {
-        return lastLocation;
-    }
 
-    public void setLastLocation(LatLng lastLocation) {
-        this.lastLocation.setValue( lastLocation);
-    }
 
 
 
