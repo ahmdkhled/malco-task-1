@@ -22,6 +22,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.malcoo.malcotask1.Model.DirectionResponse;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Repo.CheckInRepo;
 import com.malcoo.malcotask1.Repo.LocationRepo;
@@ -30,13 +31,19 @@ import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.ViewModels.MapsActivityVM;
 import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
+import com.malcoo.malcotask1.network.RetrofitClient;
 
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,LocationBottomSheet.OnActivateLocationClickedListener
 {
     private static final String TAG = "MapsActivityyy";
+    private final String DIRECTIONS_API_KEY="";
     private GoogleMap mMap;
     private MapsActivityVM mapsActivityVM;
     ActivityResultLauncher<Intent> launcher;
@@ -60,14 +67,14 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         binding= DataBindingUtil.setContentView(this,R.layout.activity_maps);
         mapsActivityVM=new ViewModelProvider(this).get(MapsActivityVM.class);
-        permissionUtil=new PermissionUtil();
+        //permissionUtil=new PermissionUtil();
         logSystem=LogSystem.getInstance(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        permissionUtil.requestPermission(this);
+        //permissionUtil.requestPermission(this);
         checkLocation();
         checkInStatus=mapsActivityVM.getLastStatus();
         binding.statusFooter.setStatus(checkInStatus);
@@ -87,6 +94,8 @@ public class MapsActivity extends FragmentActivity implements
 
 
         String log=logSystem.logToday();
+
+
 
 
     }

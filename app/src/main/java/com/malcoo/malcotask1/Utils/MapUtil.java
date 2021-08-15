@@ -94,6 +94,9 @@ public class MapUtil {
         }
         return null;
     }
+    public static String fromCoordinates(LatLng coordinate){
+        return coordinate.latitude+","+coordinate.longitude;
+    }
 
     // fake route for testing
     public static LatLng[] getFakeRoute(){

@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String DIRECTIONS_BASE_URL="https://maps.googleapis.com/maps/api/directions/json";
+    private static final String DIRECTIONS_BASE_URL="https://maps.googleapis.com/";
 
     private static RetrofitClient retrofitClient;
 
@@ -25,6 +25,10 @@ public class RetrofitClient {
                 .client(getInterceptorClient())
                 .build();
 
+    }
+
+    public Api getApi(){
+        return getRetrofit().create(Api.class);
     }
 
     private OkHttpClient getInterceptorClient(){
