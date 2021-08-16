@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
@@ -18,7 +19,9 @@ import java.util.ArrayList;
 public class MapUtil {
     Circle circle;
     Marker lastMarker;
+    private Polyline lastPolyline;
     private  boolean firstTime=true;
+
 
 
 
@@ -73,13 +76,14 @@ public class MapUtil {
     }
 
     public void drawPollyLine(GoogleMap map, Iterable<LatLng> points){
+        if (lastPolyline!=null)lastPolyline.remove();
         PolylineOptions options = new PolylineOptions();
 
         options.color( Color.parseColor("#FF38759E"));
         options.width( 13 );
         options.visible( true );
         options.addAll(points);
-        map.addPolyline(options);
+        lastPolyline=map.addPolyline(options);
     }
 
     // check if user is inside the radius of circle
