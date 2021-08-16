@@ -17,9 +17,12 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.dynamic.IObjectWrapper;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.malcoo.malcotask1.Model.DirectionResponse;
@@ -104,7 +107,10 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onMapReady( GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.addMarker(new MarkerOptions().title("Warehouse").position(warehouse)).showInfoWindow();
+        mMap.addMarker(new MarkerOptions().title("Warehouse")
+                .icon(MapUtil.bitmapDescriptorFromVector(this,R.drawable.ic_warehouse_location1))
+
+                .position(warehouse)).showInfoWindow();
         // dynamic radius as required
         mapUtil.drawCircle(500,warehouse,mMap);
     }
@@ -144,7 +150,7 @@ public class MapsActivity extends FragmentActivity implements
                 coordinates=LocationRepo.toLatLng(location);
                 Log.d(TAG, "getCurrentLocation: "+coordinates);
                 boolean inCircle=mapUtil.isInCircle(coordinates);
-                mapUtil.addCurrentLocationMarker(mMap,coordinates);
+                mapUtil.addCurrentLocationMarker(mMap,coordinates,this);
                 binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
                 binding.statusFooter.setInside(inCircle);
 

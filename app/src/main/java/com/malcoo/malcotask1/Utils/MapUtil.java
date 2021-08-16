@@ -1,10 +1,18 @@
 package com.malcoo.malcotask1.Utils;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+
+import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -13,6 +21,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.malcoo.malcotask1.R;
 
 import java.util.ArrayList;
 
@@ -27,13 +36,12 @@ public class MapUtil {
 
 
     // add marker to google map
-    public void addCurrentLocationMarker(GoogleMap mMap, LatLng coordinates,String... title){
+    public void addCurrentLocationMarker(GoogleMap mMap, LatLng coordinates,Context context){
         if (lastMarker!=null) lastMarker.remove();
         MarkerOptions markerOptions=new MarkerOptions();
         markerOptions.position(coordinates);
-        if (title.length>0)
-        markerOptions.title(title[0]);
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+
+        markerOptions.icon(bitmapDescriptorFromVector(context,R.drawable.ic_current_location));
         lastMarker=mMap.addMarker(markerOptions);
         animate(mMap,coordinates);
 
@@ -41,7 +49,7 @@ public class MapUtil {
     }
     public void animate(GoogleMap mMap, LatLng coordinates){
         if (firstTime){
-            mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(coordinates, 15f));
+            mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(coordinates, 17f));
             firstTime=false;
         }
     }
@@ -79,7 +87,7 @@ public class MapUtil {
         if (lastPolyline!=null)lastPolyline.remove();
         PolylineOptions options = new PolylineOptions();
 
-        options.color( Color.parseColor("#FF38759E"));
+        options.color( Color.parseColor("#235CA9"));
         options.width( 13 );
         options.visible( true );
         options.addAll(points);
@@ -119,7 +127,7 @@ public class MapUtil {
     public static String fromCoordinates(LatLng coordinate){
         return coordinate.latitude+","+coordinate.longitude;
     }
-
+    // convert encoded points string to list of latlng points
     public static ArrayList<LatLng> decodePolyPoints(String encodedPath){
         int len = encodedPath.length();
 
@@ -152,6 +160,15 @@ public class MapUtil {
         }
 
         return path;
+    }
+
+    public static BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     // fake route for testing
