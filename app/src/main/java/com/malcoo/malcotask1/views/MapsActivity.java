@@ -58,6 +58,7 @@ public class MapsActivity extends FragmentActivity implements
     public static final String LOCATION_KEY="location_key";
     public static final String CHECKIN_STATUS_KEY="checkin_key";
     private int checkInStatus;
+    private boolean directionsOn;
     // random warehouse coordinates outside circle
     //LatLng warehouse=new LatLng(24.689332,46.711770);
 
@@ -95,6 +96,11 @@ public class MapsActivity extends FragmentActivity implements
             startActivity(intent);
         });
 
+        binding.statusFooter.getDirection.setOnClickListener(v->{
+            directionsOn=true;
+            getDirections();
+        });
+
 
         String log=logSystem.logToday();
 
@@ -109,7 +115,6 @@ public class MapsActivity extends FragmentActivity implements
         mMap = googleMap;
         mMap.addMarker(new MarkerOptions().title("Warehouse")
                 .icon(MapUtil.bitmapDescriptorFromVector(this,R.drawable.ic_warehouse_location1))
-
                 .position(warehouse)).showInfoWindow();
         // dynamic radius as required
         mapUtil.drawCircle(500,warehouse,mMap);
@@ -154,26 +159,32 @@ public class MapsActivity extends FragmentActivity implements
                 binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
                 binding.statusFooter.setInside(inCircle);
 
-                mapsActivityVM.getDirections(this,coordinates,warehouse)
-                        .observe(this,res->{
-                            if (res.isSuccess()){
-                                Log.d(TAG, "direction api works ");
-                                DirectionResponse directionResponse=res.getData();
-                                String pointsString=directionResponse.getRoutes().get(0)
-                                        .getOverview_polyline()
-                                        .getPoints();
-                                ArrayList<LatLng> points=MapUtil.decodePolyPoints(pointsString);
-                                mapUtil.drawPollyLine(mMap,points);
-
-
-
-                            }
-                        });
+                if (!inCircle&&directionsOn){
+                    getDirections();
+                }else directionsOn=false;
 
             }else {
                 Toast.makeText(this, "failed to get Location", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void getDirections(){
+        mapsActivityVM.getDirections(this,coordinates,warehouse)
+                .observe(this,res->{
+                    if (res.isSuccess()){
+                        Log.d(TAG, "direction api works ");
+                        DirectionResponse directionResponse=res.getData();
+                        String pointsString=directionResponse.getRoutes().get(0)
+                                .getOverview_polyline()
+                                .getPoints();
+                        ArrayList<LatLng> points=MapUtil.decodePolyPoints(pointsString);
+                        mapUtil.drawPollyLine(mMap,points);
+
+
+
+                    }
+                });
     }
 
     @Override
