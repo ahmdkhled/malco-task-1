@@ -33,6 +33,7 @@ import com.malcoo.malcotask1.ViewModels.MapsActivityVM;
 import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
 import com.malcoo.malcotask1.network.RetrofitClient;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -43,7 +44,6 @@ public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,LocationBottomSheet.OnActivateLocationClickedListener
 {
     private static final String TAG = "MapsActivityyy";
-    private final String DIRECTIONS_API_KEY="";
     private GoogleMap mMap;
     private MapsActivityVM mapsActivityVM;
     ActivityResultLauncher<Intent> launcher;
@@ -67,14 +67,14 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         binding= DataBindingUtil.setContentView(this,R.layout.activity_maps);
         mapsActivityVM=new ViewModelProvider(this).get(MapsActivityVM.class);
-        //permissionUtil=new PermissionUtil();
+        permissionUtil=new PermissionUtil();
         logSystem=LogSystem.getInstance(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //permissionUtil.requestPermission(this);
+        permissionUtil.requestPermission(this);
         checkLocation();
         checkInStatus=mapsActivityVM.getLastStatus();
         binding.statusFooter.setStatus(checkInStatus);
@@ -94,6 +94,7 @@ public class MapsActivity extends FragmentActivity implements
 
 
         String log=logSystem.logToday();
+
 
 
 
@@ -144,9 +145,25 @@ public class MapsActivity extends FragmentActivity implements
                 Log.d(TAG, "getCurrentLocation: "+coordinates);
                 boolean inCircle=mapUtil.isInCircle(coordinates);
                 mapUtil.addCurrentLocationMarker(mMap,coordinates);
-                mapUtil.drawPollyLine(mMap,coordinates,warehouse);
                 binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
                 binding.statusFooter.setInside(inCircle);
+
+                mapsActivityVM.getDirections(this,coordinates,warehouse)
+                        .observe(this,res->{
+                            if (res.isSuccess()){
+                                Log.d(TAG, "direction api works ");
+                                DirectionResponse directionResponse=res.getData();
+                                String pointsString=directionResponse.getRoutes().get(0)
+                                        .getOverview_polyline()
+                                        .getPoints();
+                                ArrayList<LatLng> points=MapUtil.decodePolyPoints(pointsString);
+                                mapUtil.drawPollyLine(mMap,points);
+
+
+
+                            }
+                        });
+
             }else {
                 Toast.makeText(this, "failed to get Location", Toast.LENGTH_SHORT).show();
             }

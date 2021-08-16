@@ -34,7 +34,7 @@ public class DirectionsRepo {
         String DIRECTIONS_API_KEY=context.getResources().getString(R.string.directions_key);
         RetrofitClient.getInstance()
                 .getApi()
-                .getDirections("30.067898,31.2917312", MapUtil.fromCoordinates(dest),DIRECTIONS_API_KEY)
+                .getDirections(MapUtil.fromCoordinates(origin), MapUtil.fromCoordinates(dest),DIRECTIONS_API_KEY)
                 .enqueue(new Callback<DirectionResponse>() {
                     @Override
                     public void onResponse(Call<DirectionResponse> call, Response<DirectionResponse> response) {

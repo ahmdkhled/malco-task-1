@@ -2,7 +2,7 @@ package com.malcoo.malcotask1.Utils;
 
 import android.graphics.Color;
 import android.location.Location;
-import android.view.View;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -12,12 +12,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.malcoo.malcotask1.R;
-import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
+
+import java.util.ArrayList;
 
 public class MapUtil {
     Circle circle;
     Marker lastMarker;
+    private  boolean firstTime=true;
+
 
 
 
@@ -30,11 +32,17 @@ public class MapUtil {
         markerOptions.title(title[0]);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
         lastMarker=mMap.addMarker(markerOptions);
+        animate(mMap,coordinates);
 
-
-        mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(coordinates, 12f));
 
     }
+    public void animate(GoogleMap mMap, LatLng coordinates){
+        if (firstTime){
+            mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(coordinates, 15f));
+            firstTime=false;
+        }
+    }
+
 
     // delete old marker from map view
     public void clearLastMarker(){
@@ -61,6 +69,16 @@ public class MapUtil {
         options.visible( true );
         options.add(currentLocation);
         options.add(destination);
+        map.addPolyline(options);
+    }
+
+    public void drawPollyLine(GoogleMap map, Iterable<LatLng> points){
+        PolylineOptions options = new PolylineOptions();
+
+        options.color( Color.parseColor("#FF38759E"));
+        options.width( 13 );
+        options.visible( true );
+        options.addAll(points);
         map.addPolyline(options);
     }
 
@@ -96,6 +114,40 @@ public class MapUtil {
     }
     public static String fromCoordinates(LatLng coordinate){
         return coordinate.latitude+","+coordinate.longitude;
+    }
+
+    public static ArrayList<LatLng> decodePolyPoints(String encodedPath){
+        int len = encodedPath.length();
+
+        final ArrayList<LatLng> path = new ArrayList<LatLng>();
+        int index = 0;
+        int lat = 0;
+        int lng = 0;
+
+        while (index < len) {
+            int result = 1;
+            int shift = 0;
+            int b;
+            do {
+                b = encodedPath.charAt(index++) - 63 - 1;
+                result += b << shift;
+                shift += 5;
+            } while (b >= 0x1f);
+            lat += (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+
+            result = 1;
+            shift = 0;
+            do {
+                b = encodedPath.charAt(index++) - 63 - 1;
+                result += b << shift;
+                shift += 5;
+            } while (b >= 0x1f);
+            lng += (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+
+            path.add(new LatLng(lat * 1e-5, lng * 1e-5));
+        }
+
+        return path;
     }
 
     // fake route for testing
