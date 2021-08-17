@@ -165,7 +165,7 @@ public class LogSystem {
     public void clear(){ editor.clear(); }
 
     public int getLastStatus(){
-        return sharedPreferences.getInt(CHECKIN_STATUS_TAG,-1);
+        return sharedPreferences.getInt(CHECKIN_STATUS_TAG,CHECK_OUT);
     }
     //save the last user status if he checked in or checked out
     public void setLastStatus(int status){
