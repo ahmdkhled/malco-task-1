@@ -174,6 +174,7 @@ public class MapsActivity extends FragmentActivity implements
                         ArrayList<LatLng> points=MapUtil.decodePolyPoints(pointsString);
                         mapUtil.drawPollyLine(mMap,points);
                         binding.statusFooter.setGettingDirection(false);
+                        mapUtil.animate(mMap,coordinates,warehouse);
                         directionsOn=false;
                     }
                 });

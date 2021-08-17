@@ -10,6 +10,7 @@ import android.location.Location;
 import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -31,10 +33,6 @@ public class MapUtil {
     private Polyline lastPolyline;
     private  boolean firstTime=true;
 
-
-
-
-
     // add marker to google map
     public void addCurrentLocationMarker(GoogleMap mMap, LatLng coordinates,Context context){
         if (lastMarker!=null) lastMarker.remove();
@@ -45,11 +43,23 @@ public class MapUtil {
         lastMarker=mMap.addMarker(markerOptions);
         animate(mMap,coordinates);
 
+    }
+    public void animate(GoogleMap mMap, LatLng... coordinates){
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (LatLng point : coordinates) {
+                builder.include(point);
+            }
+            LatLngBounds bounds = builder.build();
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,50);
+            mMap.animateCamera(cu);
+
 
     }
+
     public void animate(GoogleMap mMap, LatLng coordinates){
         if (firstTime){
-            mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(coordinates, 17f));
+            CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(coordinates,17);
+            mMap.animateCamera(cu);
             firstTime=false;
         }
     }
