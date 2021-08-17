@@ -17,12 +17,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.dynamic.IObjectWrapper;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.malcoo.malcotask1.Model.DirectionResponse;
@@ -34,14 +31,8 @@ import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.ViewModels.MapsActivityVM;
 import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
-import com.malcoo.malcotask1.network.RetrofitClient;
 
 import java.util.ArrayList;
-import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,LocationBottomSheet.OnActivateLocationClickedListener
@@ -141,7 +132,7 @@ public class MapsActivity extends FragmentActivity implements
             }
         }
     }
-    int i=0;
+
     private void getCurrentLocation(){
 
         if (!mapsActivityVM.isLocationEnabled()){
@@ -161,7 +152,7 @@ public class MapsActivity extends FragmentActivity implements
 
                 if (!inCircle&&directionsOn){
                     getDirections();
-                }else directionsOn=false;
+                }
 
             }else {
                 Toast.makeText(this, "failed to get Location", Toast.LENGTH_SHORT).show();
@@ -170,6 +161,8 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     private void getDirections(){
+
+        binding.statusFooter.setGettingDirection(true);
         mapsActivityVM.getDirections(this,coordinates,warehouse)
                 .observe(this,res->{
                     if (res.isSuccess()){
@@ -180,9 +173,8 @@ public class MapsActivity extends FragmentActivity implements
                                 .getPoints();
                         ArrayList<LatLng> points=MapUtil.decodePolyPoints(pointsString);
                         mapUtil.drawPollyLine(mMap,points);
-
-
-
+                        binding.statusFooter.setGettingDirection(false);
+                        directionsOn=false;
                     }
                 });
     }

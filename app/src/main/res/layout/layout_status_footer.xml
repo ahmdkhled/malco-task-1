@@ -15,6 +15,11 @@
             type="Integer"
             />
 
+        <variable
+            name="gettingDirection"
+            type="Boolean"
+            />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,18 +68,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:id="@+id/getDirection"
-            android:text="get Direction"
-            tools:text="check in"
+            android:text='@{gettingDirection?"getting direction":"get Direction"}'
+
+            tools:text="get direction"
             android:textColor="@color/white"
+            app:elevation="2dp"
             android:textAllCaps="false"
-            android:background="#D12F2F"
-            android:enabled="@{!inside}"
+            android:backgroundTint="#E44141"
+            android:enabled="@{!inside &amp;&amp; !gettingDirection}"
             android:visibility='@{inside?8:0}'
-            android:drawableStart="@drawable/ic_marker_map"
+            app:icon="@drawable/ic_marker_map"
+            app:iconPadding="0dp"
             android:padding="3dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
