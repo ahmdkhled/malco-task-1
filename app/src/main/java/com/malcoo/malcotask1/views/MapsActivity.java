@@ -106,7 +106,7 @@ public class MapsActivity extends FragmentActivity implements
     private void forceCheckout() {
         if (lastcheckInStatus==LogSystem.CHECK_IN){
             CheckedInFrag checkedInFrag=new CheckedInFrag(2,coordinates,true);
-            FragmentUtils.addFrag(this,checkedInFrag);
+            FragmentUtils.addFrag(this,checkedInFrag,"checkedInFrag");
             binding.statusFooter.getRoot().setVisibility(View.GONE);
 
         }

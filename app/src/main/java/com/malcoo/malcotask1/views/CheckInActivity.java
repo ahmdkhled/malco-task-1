@@ -53,7 +53,7 @@ public class CheckInActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PermissionUtil.Camera_PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                FragmentUtils.addFrag(this,new CheckInFrag(currentLocation,status));
+                FragmentUtils.addFrag(this,new CheckInFrag(currentLocation,status),"CheckInFrag");
 
             }else{
                 permissionUtil.showDialog(this,this);

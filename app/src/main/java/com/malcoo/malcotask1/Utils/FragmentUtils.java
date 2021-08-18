@@ -7,7 +7,9 @@ import com.malcoo.malcotask1.R;
 
 public class FragmentUtils {
 
-    public static void addFrag(Context context, Fragment fragment){
+    public static void addFrag(Context context, Fragment fragment,String tag ){
+        Fragment frag=((FragmentActivity)context).getSupportFragmentManager().findFragmentByTag(tag);
+        if (frag!=null)return;
         ((FragmentActivity)context)
                 .getSupportFragmentManager()
                 .beginTransaction()
