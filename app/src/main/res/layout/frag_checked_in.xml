@@ -96,6 +96,7 @@
             android:textColor="#CF2D2D"
             android:textSize="15sp"
             android:gravity="center_horizontal"
+            android:format12Hour=" hh:mm:ss a"
             android:visibility="@{forceCheckout?0:8}"
             app:layout_constraintTop_toBottomOf="@id/checkout_warning"
             android:layout_marginTop="1dp"
