@@ -26,7 +26,7 @@ public class CheckInFrag extends Fragment {
     FragCheckInBinding binding;
     LatLng currentLocation;
     LogSystem logSystem;
-
+    boolean forceCheckout;
     int status;
     private static final String TAG = "CheckInFrag";
 
@@ -36,12 +36,19 @@ public class CheckInFrag extends Fragment {
         this.status=status;
     }
 
+    public CheckInFrag(LatLng currentLocation, int status, boolean forceCheckout) {
+        this.currentLocation = currentLocation;
+        this.forceCheckout = forceCheckout;
+        this.status = status;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding= DataBindingUtil.inflate(LayoutInflater.from(container.getContext()), R.layout.frag_check_in,container,false);
         logSystem=LogSystem.getInstance(getContext());
         observeQrCode();
+
 
         return binding.getRoot();
     }
@@ -71,7 +78,7 @@ public class CheckInFrag extends Fragment {
     private void checkIn(){
         long currentTime=System.currentTimeMillis();
         boolean b=logSystem.addEnteringTime(currentTime);
-        FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status,currentTime));
+        FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status,currentLocation,currentTime,forceCheckout));
         CheckInRepo.getInstance()
                 .setCheckInStatus(CHECK_IN);
         LogSystem.getInstance(getContext()).setLastStatus(CHECK_IN);
@@ -80,10 +87,14 @@ public class CheckInFrag extends Fragment {
     private void checkOut() {
         long currentTime=System.currentTimeMillis();
         logSystem.addLeavingTime(currentTime);
-        FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status,currentTime));
+        FragmentUtils.replaceFragment(getContext(),new CheckedInFrag(status,currentLocation,currentTime,forceCheckout));
         CheckInRepo.getInstance()
                 .setCheckInStatus(CHECK_OUT);
         LogSystem.getInstance(getContext()).setLastStatus(CHECK_OUT);
 
+    }
+
+    public void setForceCheckout(boolean forceCheckout) {
+        this.forceCheckout = forceCheckout;
     }
 }

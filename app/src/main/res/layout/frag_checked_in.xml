@@ -7,12 +7,16 @@
         <variable
             name="status"
             type="Integer" />
+
+        <variable
+            name="forceCheckout"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#3EBD6D6D">
+        android:background="#E8B7B7">
 
 
         <ImageView
@@ -51,6 +55,21 @@
             android:text="@{status==2?@string/welcome_message:@string/goodbye_message}"
             tools:text="you have checked in successfully "
             android:textSize="16sp"
+            android:visibility="@{forceCheckout?8:0}"
+            android:gravity="center_horizontal"
+            app:layout_constraintTop_toBottomOf="@id/welcome"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="1dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkout_warning"
+            android:text="it is time to checkout"
+            tools:text="you have checked in successfully "
+            android:textSize="16sp"
+            android:visibility="@{forceCheckout?0:8}"
             android:gravity="center_horizontal"
             app:layout_constraintTop_toBottomOf="@id/welcome"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,11 +80,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/time"
+            android:visibility="@{forceCheckout?8:0}"
             tools:text="12.00 pm"
             android:textColor="#CF2D2D"
             android:textSize="15sp"
             android:gravity="center_horizontal"
             app:layout_constraintTop_toBottomOf="@id/message"
+            android:layout_marginTop="1dp"
+            />
+
+        <TextClock
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/clock_time"
+            android:textColor="#CF2D2D"
+            android:textSize="15sp"
+            android:gravity="center_horizontal"
+            android:visibility="@{forceCheckout?0:8}"
+            app:layout_constraintTop_toBottomOf="@id/checkout_warning"
             android:layout_marginTop="1dp"
             />
 

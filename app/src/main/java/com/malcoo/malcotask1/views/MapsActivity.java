@@ -26,6 +26,7 @@ import com.malcoo.malcotask1.Model.DirectionResponse;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Repo.CheckInRepo;
 import com.malcoo.malcotask1.Repo.LocationRepo;
+import com.malcoo.malcotask1.Utils.FragmentUtils;
 import com.malcoo.malcotask1.Utils.LogSystem;
 import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
@@ -48,7 +49,7 @@ public class MapsActivity extends FragmentActivity implements
     LatLng coordinates;
     public static final String LOCATION_KEY="location_key";
     public static final String CHECKIN_STATUS_KEY="checkin_key";
-    private int checkInStatus;
+    private int lastcheckInStatus;
     private boolean directionsOn;
     // random warehouse coordinates outside circle
     //LatLng warehouse=new LatLng(24.689332,46.711770);
@@ -65,24 +66,25 @@ public class MapsActivity extends FragmentActivity implements
         permissionUtil=new PermissionUtil();
         logSystem=LogSystem.getInstance(this);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
 
         permissionUtil.requestPermission(this);
+
+        lastcheckInStatus =mapsActivityVM.getLastStatus();
+        Log.d(TAG, "status : "+ lastcheckInStatus);
         checkLocation();
-        checkInStatus=mapsActivityVM.getLastStatus();
-        binding.statusFooter.setStatus(checkInStatus);
+
+        binding.statusFooter.setStatus(lastcheckInStatus);
         CheckInRepo.getInstance()
                 .getCheckInStatus()
                 .observe(this, status -> {
                     binding.statusFooter.setStatus(status);
-                    checkInStatus=status;
+                    lastcheckInStatus =status;
                 });
 
         binding.statusFooter.checkIn.setOnClickListener(v->{
             Intent intent=new Intent(this,CheckInActivity.class);
-            intent.putExtra(CHECKIN_STATUS_KEY,checkInStatus);
+            intent.putExtra(CHECKIN_STATUS_KEY, lastcheckInStatus);
             intent.putExtra(LOCATION_KEY,coordinates);
             startActivity(intent);
         });
@@ -99,6 +101,15 @@ public class MapsActivity extends FragmentActivity implements
 
 
 
+    }
+
+    private void forceCheckout() {
+        if (lastcheckInStatus==LogSystem.CHECK_IN){
+            CheckedInFrag checkedInFrag=new CheckedInFrag(2,coordinates,true);
+            FragmentUtils.addFrag(this,checkedInFrag);
+            binding.statusFooter.getRoot().setVisibility(View.GONE);
+
+        }
     }
 
     @Override
@@ -149,7 +160,7 @@ public class MapsActivity extends FragmentActivity implements
                 mapUtil.addCurrentLocationMarker(mMap,coordinates,this);
                 binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
                 binding.statusFooter.setInside(inCircle);
-
+                if (inCircle)forceCheckout();
                 if (!inCircle&&directionsOn){
                     getDirections();
                 }
@@ -185,7 +196,11 @@ public class MapsActivity extends FragmentActivity implements
         launcher.launch(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
     }
 
-
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
 }

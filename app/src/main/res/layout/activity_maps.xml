@@ -10,7 +10,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
 
         <fragment
@@ -30,6 +31,12 @@
             android:visibility="gone"
             map:layout_constraintBottom_toBottomOf="parent" />
 
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/container"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

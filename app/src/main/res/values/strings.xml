@@ -4,7 +4,7 @@
     <string name="activate_location_message">your location is turned off please activate yor location</string>
     <string name="wrong_qr">this qr code is not valid please scan warehouse qr code</string>
     <string name="checked_in">you have checked in successfully</string>
-    <string name="welcome">Welcome </string>
+    <string name="welcome">Welcome to hub </string>
     <string name="welcome_message">you have checked in successfully  </string>
     <string name="goodbye">Good Bye</string>
     <string name="goodbye_message">you have checked out successfully  </string>
