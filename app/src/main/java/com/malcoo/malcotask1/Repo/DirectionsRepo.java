@@ -41,6 +41,10 @@ public class DirectionsRepo {
                         Log.d(TAG, "onResponse: "+response.body());
                         DirectionResponse directionResponse=response.body();
                         if (response.isSuccessful()&&directionResponse!=null){
+                            if (directionResponse.getRoutes().isEmpty()){
+                                directions.setValue(Result.ERROR("there is no routes available"));
+
+                            }else
                             directions.setValue(Result.SUCCESS(directionResponse));
                         }else {
                             directions.setValue(Result.ERROR("error getting directions"));
