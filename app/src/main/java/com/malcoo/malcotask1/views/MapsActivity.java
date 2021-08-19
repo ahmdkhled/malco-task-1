@@ -160,7 +160,10 @@ public class MapsActivity extends FragmentActivity implements
                 mapUtil.addCurrentLocationMarker(mMap,coordinates,this);
                 binding.statusFooter.getRoot().setVisibility(View.VISIBLE);
                 binding.statusFooter.setInside(inCircle);
-                if (inCircle)forceCheckout();
+                if (inCircle){
+                    mapUtil.removePolyline();
+                    forceCheckout();
+                }
                 if (!inCircle&&directionsOn){
                     getDirections();
                 }

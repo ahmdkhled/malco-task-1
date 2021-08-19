@@ -70,6 +70,11 @@ public class MapUtil {
         lastMarker.remove();
     }
 
+    public void removePolyline(){
+        if (lastPolyline!=null)
+        lastPolyline.remove();
+    }
+
 
     //function to add circle surrounding plcaes like ware house
     public void drawCircle(double radius,LatLng place, GoogleMap map){
