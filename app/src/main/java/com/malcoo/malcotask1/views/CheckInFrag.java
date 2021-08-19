@@ -1,6 +1,8 @@
 package com.malcoo.malcotask1.views;
 
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Repo.CheckInRepo;
+import com.malcoo.malcotask1.Repo.LocationRepo;
 import com.malcoo.malcotask1.Utils.CameraUtil;
 import com.malcoo.malcotask1.Utils.FragmentUtils;
 import com.malcoo.malcotask1.Utils.LogSystem;
@@ -49,6 +52,16 @@ public class CheckInFrag extends Fragment {
         logSystem=LogSystem.getInstance(getContext());
         observeQrCode();
 
+        LocationRepo.getInstance(getContext())
+                .getLocationData()
+                .observe(getViewLifecycleOwner(),locationRes->{
+                    Location location=locationRes.getData();
+                    if (locationRes.isSuccess()&&location!=null){
+                        currentLocation=LocationRepo.toLatLng(location);
+                        Log.d(TAG, "location in scanner: "+currentLocation);
+
+                    }
+                });
 
         return binding.getRoot();
     }

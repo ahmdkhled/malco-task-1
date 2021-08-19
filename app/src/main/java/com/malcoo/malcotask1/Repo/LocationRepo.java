@@ -81,5 +81,7 @@ public class LocationRepo  {
         return new LatLng(location.getLatitude(),location.getLongitude());
     }
 
-
+    public MutableLiveData<Result<Location>> getLocationData() {
+        return locationData;
+    }
 }
