@@ -54,7 +54,8 @@ dependencies {
     //gson
     implementation 'com.google.code.gson:gson:2.8.7'
 
-    implementation 'com.google.android.material:material:1.5.0-alpha01'
+    implementation 'com.google.android.material:material:1.5.0-alpha02'
+    implementation 'com.github.matecode:Snacky:1.1.5'
     //ml kit
     implementation 'com.google.mlkit:barcode-scanning:16.2.0'
 

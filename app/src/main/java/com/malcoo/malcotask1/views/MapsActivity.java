@@ -32,6 +32,7 @@ import com.malcoo.malcotask1.Utils.MapUtil;
 import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.ViewModels.MapsActivityVM;
 import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
+import com.malcoo.malcotask1.network.Network;
 
 import java.util.ArrayList;
 
@@ -67,12 +68,11 @@ public class MapsActivity extends FragmentActivity implements
         logSystem=LogSystem.getInstance(this);
 
 
-
-        permissionUtil.requestPermission(this);
+        checkLocation();
+        checkConnection();
 
         lastcheckInStatus =mapsActivityVM.getLastStatus();
         Log.d(TAG, "status : "+ lastcheckInStatus);
-        checkLocation();
 
         binding.statusFooter.setStatus(lastcheckInStatus);
         CheckInRepo.getInstance()
@@ -99,6 +99,19 @@ public class MapsActivity extends FragmentActivity implements
 
 
 
+
+
+    }
+
+    void checkConnection(){
+        if (!Network.isConnected(this)){
+            View.OnClickListener onClickListener= v -> {
+                checkConnection();
+            };
+            FragmentUtils.showErrorMessage(this,"there is no connection",onClickListener);
+            return;
+        }
+        permissionUtil.requestPermission(this);
 
 
     }
