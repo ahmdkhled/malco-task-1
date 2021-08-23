@@ -1,11 +1,16 @@
 package com.malcoo.malcotask1.views;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -24,9 +29,11 @@ import com.malcoo.malcotask1.databinding.FragCheckInBinding;
 import static com.malcoo.malcotask1.Utils.LogSystem.CHECK_IN;
 import static com.malcoo.malcotask1.Utils.LogSystem.CHECK_OUT;
 
-public class CheckInFrag extends Fragment {
+public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActivateLocationClickedListener{
 
     FragCheckInBinding binding;
+    ActivityResultLauncher<Intent> launcher;
+    LocationBottomSheet locationBottomSheet;
     LatLng currentLocation;
     LogSystem logSystem;
     boolean forceCheckout;
@@ -51,7 +58,35 @@ public class CheckInFrag extends Fragment {
         binding= DataBindingUtil.inflate(LayoutInflater.from(container.getContext()), R.layout.frag_check_in,container,false);
         logSystem=LogSystem.getInstance(getContext());
         observeQrCode();
+        locationBottomSheet=new LocationBottomSheet(this);
 
+        checkLocation();
+
+
+        launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (LocationRepo.getInstance(getContext()).isLocationEnabled()){
+                        observeLocation();
+                        return;
+                    }
+                    locationBottomSheet.show(getChildFragmentManager(),"");
+                });
+
+
+        return binding.getRoot();
+    }
+
+    private void checkLocation(){
+        boolean locationEnabled=LocationRepo.getInstance(getContext()).isLocationEnabled();
+        if (locationEnabled){
+            observeLocation();
+        }else{
+            locationBottomSheet.show(getChildFragmentManager(),"");
+        }
+    }
+
+    private  void observeLocation(){
         LocationRepo.getInstance(getContext())
                 .getLocationData()
                 .observe(getViewLifecycleOwner(),locationRes->{
@@ -62,13 +97,16 @@ public class CheckInFrag extends Fragment {
 
                     }
                 });
-
-        return binding.getRoot();
     }
 
     private void observeQrCode(){
         CameraUtil.getInstance().startCamera(getContext(),this,binding.previewView);
         CameraUtil.getInstance().setOnBarcodeScannedListener(barcode -> {
+            if (!LocationRepo.getInstance(getContext()).isLocationEnabled()){
+                locationBottomSheet.show(getChildFragmentManager(),"");
+                return;
+            }
+
             String value=barcode.getRawValue();
 
             LatLng coordinates= MapUtil.getCoordinates(value);
@@ -109,5 +147,10 @@ public class CheckInFrag extends Fragment {
 
     public void setForceCheckout(boolean forceCheckout) {
         this.forceCheckout = forceCheckout;
+    }
+
+    @Override
+    public void onActivateLocationClickedListener() {
+        launcher.launch(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
     }
 }

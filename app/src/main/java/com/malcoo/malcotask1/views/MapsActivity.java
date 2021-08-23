@@ -139,7 +139,13 @@ public class MapsActivity extends FragmentActivity implements
         launcher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    if (LocationRepo.getInstance(this).isLocationEnabled()){
                         getCurrentLocation();
+                        return;
+                    }
+                    new LocationBottomSheet(this)
+                            .show(getSupportFragmentManager(),"");
+
                 });
 
     }
