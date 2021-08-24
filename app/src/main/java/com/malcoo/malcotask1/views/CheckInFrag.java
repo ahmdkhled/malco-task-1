@@ -57,7 +57,7 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding= DataBindingUtil.inflate(LayoutInflater.from(container.getContext()), R.layout.frag_check_in,container,false);
         logSystem=LogSystem.getInstance(getContext());
-        observeQrCode();
+
         locationBottomSheet=new LocationBottomSheet(this);
 
         checkLocation();
@@ -102,6 +102,7 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
     private void observeQrCode(){
         CameraUtil.getInstance().startCamera(getContext(),this,binding.previewView);
         CameraUtil.getInstance().setOnBarcodeScannedListener(barcode -> {
+            Log.d(TAG, "observeQrCode: "+barcode.getRawValue());
             if (!LocationRepo.getInstance(getContext()).isLocationEnabled()){
                 locationBottomSheet.show(getChildFragmentManager(),"");
                 return;
@@ -152,5 +153,12 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
     @Override
     public void onActivateLocationClickedListener() {
         launcher.launch(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+        observeQrCode();
     }
 }
