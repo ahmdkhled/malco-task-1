@@ -223,7 +223,10 @@ public class MapsActivity extends FragmentActivity implements
         if (!LocationRepo.getInstance(this).isLocationEnabled()){
             LocationBottomSheet locationBottomSheet=new LocationBottomSheet(this);
             locationBottomSheet.show(getSupportFragmentManager(),"");
+            return;
         }
+        getCurrentLocation();
+
     }
 
     @Override
