@@ -26,6 +26,7 @@ import com.malcoo.malcotask1.Model.DirectionResponse;
 import com.malcoo.malcotask1.R;
 import com.malcoo.malcotask1.Repo.CheckInRepo;
 import com.malcoo.malcotask1.Repo.LocationRepo;
+import com.malcoo.malcotask1.Utils.CameraUtil;
 import com.malcoo.malcotask1.Utils.FragmentUtils;
 import com.malcoo.malcotask1.Utils.LogSystem;
 import com.malcoo.malcotask1.Utils.MapUtil;
@@ -117,11 +118,10 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     private void forceCheckout() {
-        if (lastcheckInStatus==LogSystem.CHECK_IN){
+        if (lastcheckInStatus==LogSystem.CHECK_IN&&!CameraUtil.scannerAlive) {
             CheckedInFrag checkedInFrag=new CheckedInFrag(2,coordinates,true);
             FragmentUtils.addFrag(this,checkedInFrag,"checkedInFrag");
             binding.statusFooter.getRoot().setVisibility(View.GONE);
-
         }
     }
 

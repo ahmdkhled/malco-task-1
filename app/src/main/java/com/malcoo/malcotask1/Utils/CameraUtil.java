@@ -23,6 +23,7 @@ public class CameraUtil {
     ImageAnalysis imageAnalysis;
     BarcodeAnalyzer.OnBarcodeScannedListener onBarcodeScannedListener;
     public static String lastValue="";
+    public  static boolean scannerAlive;
     private static final String TAG = "CameraUtil";
 
     public static CameraUtil getInstance(){

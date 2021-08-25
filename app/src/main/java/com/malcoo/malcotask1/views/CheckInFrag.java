@@ -160,5 +160,13 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
         super.onResume();
         Log.d(TAG, "onResume: ");
         observeQrCode();
+        CameraUtil.scannerAlive=true;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+        CameraUtil.scannerAlive=false;
     }
 }
