@@ -214,8 +214,16 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     @Override
-    public void onActivateLocationClickedListener() {
+    public void onActivateLocationClicked() {
         launcher.launch(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+    }
+
+    @Override
+    public void onActivateLocationDismissed() {
+        if (!LocationRepo.getInstance(this).isLocationEnabled()){
+            LocationBottomSheet locationBottomSheet=new LocationBottomSheet(this);
+            locationBottomSheet.show(getSupportFragmentManager(),"");
+        }
     }
 
     @Override

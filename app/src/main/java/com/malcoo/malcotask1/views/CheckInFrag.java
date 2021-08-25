@@ -105,6 +105,7 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
             Log.d(TAG, "observeQrCode: "+barcode.getRawValue());
             if (!LocationRepo.getInstance(getContext()).isLocationEnabled()){
                 locationBottomSheet.show(getChildFragmentManager(),"");
+                binding.barcodeValue.setText("please enable location ");
                 return;
             }
 
@@ -151,8 +152,16 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
     }
 
     @Override
-    public void onActivateLocationClickedListener() {
+    public void onActivateLocationClicked() {
         launcher.launch(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+    }
+
+    @Override
+    public void onActivateLocationDismissed() {
+        if (!LocationRepo.getInstance(getContext()).isLocationEnabled()){
+            LocationBottomSheet locationBottomSheet=new LocationBottomSheet(this);
+            locationBottomSheet.show(getChildFragmentManager(),"");
+        }
     }
 
     @Override

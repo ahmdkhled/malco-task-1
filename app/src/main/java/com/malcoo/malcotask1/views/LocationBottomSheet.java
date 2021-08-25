@@ -1,9 +1,12 @@
 package com.malcoo.malcotask1.views;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -26,14 +29,21 @@ public class LocationBottomSheet extends BottomSheetDialogFragment {
                 .inflate(inflater,R.layout.layout_location_bottonsheet,container,false);
 
         binding.activateLocation.setOnClickListener(v -> {
-            onActivateLocationClickedListener.onActivateLocationClickedListener();
+            onActivateLocationClickedListener.onActivateLocationClicked();
             dismiss();
         });
 
         return binding.getRoot();
     }
 
+    @Override
+    public void onCancel(@NonNull DialogInterface dialog) {
+        super.onCancel(dialog);
+        onActivateLocationClickedListener.onActivateLocationDismissed();
+    }
+
     interface OnActivateLocationClickedListener{
-        void onActivateLocationClickedListener();
+        void onActivateLocationClicked();
+        void onActivateLocationDismissed();
     }
 }
