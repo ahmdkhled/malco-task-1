@@ -106,8 +106,10 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
             if (!LocationRepo.getInstance(getContext()).isLocationEnabled()){
                 locationBottomSheet.show(getChildFragmentManager(),"");
                 binding.barcodeValue.setText("please enable location ");
+                CameraUtil.lastValue="";
                 return;
             }
+            binding.barcodeValue.setText("------");
 
             String value=barcode.getRawValue();
 

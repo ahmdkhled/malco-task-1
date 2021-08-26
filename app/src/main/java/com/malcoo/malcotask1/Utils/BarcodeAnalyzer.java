@@ -34,6 +34,7 @@ public class BarcodeAnalyzer implements ImageAnalysis.Analyzer {
                     .addOnSuccessListener(barcodes -> {
                         if (!barcodes.isEmpty()){
                             String value=barcodes.get(0).getRawValue();
+                            Log.d(TAG, "analyze: "+value);
                             if (value!=null&&!value.equals(CameraUtil.lastValue)){
                                 onBarcodeScannedListener.oBarcodeScanned(barcodes.get(0));
                                 CameraUtil.lastValue=value;
