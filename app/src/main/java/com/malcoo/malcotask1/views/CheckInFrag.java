@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
 import com.malcoo.malcotask1.R;
@@ -36,6 +38,7 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
     LocationBottomSheet locationBottomSheet;
     LatLng currentLocation;
     LogSystem logSystem;
+    private Observer<Boolean> locationStatusObserver;
     boolean forceCheckout;
     int status;
     private static final String TAG = "CheckInFrag";
@@ -57,21 +60,25 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding= DataBindingUtil.inflate(LayoutInflater.from(container.getContext()), R.layout.frag_check_in,container,false);
         logSystem=LogSystem.getInstance(getContext());
-
         locationBottomSheet=new LocationBottomSheet(this);
 
         checkLocation();
-
-
         launcher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (LocationRepo.getInstance(getContext()).isLocationEnabled()){
-                        observeLocation();
-                        return;
-                    }
-                    locationBottomSheet.show(getChildFragmentManager(),"");
-                });
+                result -> { });
+
+        locationStatusObserver= status-> {
+            Log.d(TAG, "status observe: "+status);
+            if (status){ // location is off
+                if (locationBottomSheet.isAdded()) locationBottomSheet.dismiss();
+            }else {
+                if (!locationBottomSheet.isAdded())locationBottomSheet.show(getChildFragmentManager(),"");
+            }
+        };
+
+        LocationRepo.getInstance(getContext())
+                .observeLocationStatus()
+                .observe(getViewLifecycleOwner(),locationStatusObserver);
 
 
         return binding.getRoot();
@@ -104,7 +111,6 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
         CameraUtil.getInstance().setOnBarcodeScannedListener(barcode -> {
             Log.d(TAG, "observeQrCode: "+barcode.getRawValue());
             if (!LocationRepo.getInstance(getContext()).isLocationEnabled()){
-                locationBottomSheet.show(getChildFragmentManager(),"");
                 binding.barcodeValue.setText("please enable location ");
                 CameraUtil.lastValue="";
                 return;
@@ -161,7 +167,6 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
     @Override
     public void onActivateLocationDismissed() {
         if (!LocationRepo.getInstance(getContext()).isLocationEnabled()){
-            LocationBottomSheet locationBottomSheet=new LocationBottomSheet(this);
             locationBottomSheet.show(getChildFragmentManager(),"");
         }
     }

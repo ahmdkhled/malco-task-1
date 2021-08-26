@@ -2,8 +2,10 @@ package com.malcoo.malcotask1.views;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -34,6 +36,7 @@ import com.malcoo.malcotask1.Utils.PermissionUtil;
 import com.malcoo.malcotask1.ViewModels.MapsActivityVM;
 import com.malcoo.malcotask1.databinding.ActivityMapsBinding;
 import com.malcoo.malcotask1.network.Network;
+import com.malcoo.malcotask1.receivers.LocationReceiver;
 
 import java.util.ArrayList;
 
@@ -47,6 +50,8 @@ public class MapsActivity extends FragmentActivity implements
     MapUtil mapUtil=new MapUtil();
     PermissionUtil permissionUtil;
     LogSystem logSystem;
+    LocationReceiver locationReceiver;
+    LocationBottomSheet locationBottomSheet;
     ActivityMapsBinding binding;
     LatLng coordinates;
     public static final String LOCATION_KEY="location_key";
@@ -65,6 +70,8 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         binding= DataBindingUtil.setContentView(this,R.layout.activity_maps);
         mapsActivityVM=new ViewModelProvider(this).get(MapsActivityVM.class);
+        locationBottomSheet=new LocationBottomSheet(this);
+        locationReceiver=new LocationReceiver();
         permissionUtil=new PermissionUtil();
         logSystem=LogSystem.getInstance(this);
 
@@ -136,15 +143,23 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     void checkLocation(){
+        LocationRepo.getInstance(this)
+                .observeLocationStatus()
+                .observe(this,enabled->{
+                    if (enabled){
+                        getCurrentLocation();
+                        if (locationBottomSheet.isAdded())locationBottomSheet.show(getSupportFragmentManager(),"");
+                    }else {
+                        mapsActivityVM.stopLocationUpdates();
+                        if (!locationBottomSheet.isAdded())locationBottomSheet
+                                .show(getSupportFragmentManager(),"");
+                    }
+                    Log.d(TAG, "checkLocation: observe location enabled "+enabled);
+                });
+
         launcher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (LocationRepo.getInstance(this).isLocationEnabled()){
-                        getCurrentLocation();
-                        return;
-                    }
-                    new LocationBottomSheet(this)
-                            .show(getSupportFragmentManager(),"");
 
                 });
 
@@ -166,8 +181,7 @@ public class MapsActivity extends FragmentActivity implements
     private void getCurrentLocation(){
 
         if (!mapsActivityVM.isLocationEnabled()){
-            new LocationBottomSheet(this)
-                    .show(getSupportFragmentManager(),"");
+            locationBottomSheet.show(getSupportFragmentManager(),"");
             return;
         }
         mapsActivityVM.getLocation().observe(this, latLngResult -> {
@@ -235,5 +249,19 @@ public class MapsActivity extends FragmentActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(locationReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(locationReceiver);
+
     }
 }

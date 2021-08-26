@@ -15,6 +15,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.malcoo.malcotask1.Model.Result;
+import com.malcoo.malcotask1.receivers.LocationReceiver;
 
 
 public class LocationRepo  {
@@ -22,11 +23,16 @@ public class LocationRepo  {
     Context context;
     private static LocationRepo locationRepo;
     MutableLiveData<Result<Location>> locationData;
+    MutableLiveData<Boolean> locationEnabled;
+
 
     LocationCallback locationCallback;
 
     private LocationRepo(Context context) {
         this.context = context;
+        locationEnabled=new MutableLiveData<>();
+        Log.d("instancee", "LocationRepo: instance");
+
     }
 
     public static LocationRepo getInstance(Context context) {
@@ -35,6 +41,8 @@ public class LocationRepo  {
         }
         return locationRepo;
     }
+
+
 
 
     // start location tracking
@@ -83,5 +91,13 @@ public class LocationRepo  {
 
     public MutableLiveData<Result<Location>> getLocationData() {
         return locationData;
+    }
+
+    public MutableLiveData<Boolean> observeLocationStatus() {
+        return locationEnabled;
+    }
+
+    public void setLocationEnabled(Boolean locationEnabled) {
+        this.locationEnabled.setValue(locationEnabled);
     }
 }

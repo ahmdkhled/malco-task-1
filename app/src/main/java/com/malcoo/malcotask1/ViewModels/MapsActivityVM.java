@@ -30,6 +30,11 @@ public class MapsActivityVM extends AndroidViewModel {
 
     }
 
+    public void stopLocationUpdates(){
+        LocationRepo.getInstance(getApplication().getApplicationContext())
+                .stopLocationUpdate();
+    }
+
     public boolean isLocationEnabled(){
         return LocationRepo.getInstance(getApplication().getApplicationContext())
                 .isLocationEnabled();
