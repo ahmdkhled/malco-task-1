@@ -80,6 +80,7 @@ public class LocationRepo  {
     }
 
     public void stopLocationUpdate(){
+        if (locationCallback!=null)
         LocationServices.getFusedLocationProviderClient(context)
                 .removeLocationUpdates(locationCallback);
     }

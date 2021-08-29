@@ -13,7 +13,8 @@ public class LocationReceiver extends BroadcastReceiver {
     static Boolean isEnabled=null;
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().matches(LocationManager.PROVIDERS_CHANGED_ACTION)) {
+        Log.d(TAG, "onReceive: "+intent);
+        if (intent!=null&&intent.getAction().matches(LocationManager.PROVIDERS_CHANGED_ACTION)) {
             boolean locationEnabled= LocationRepo.getInstance(context).isLocationEnabled();
             Log.d(TAG, "onReceive: "+locationEnabled);
             if (isEnabled==null||isEnabled!=locationEnabled)
