@@ -172,6 +172,7 @@ public class MapsActivity extends FragmentActivity implements
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PermissionUtil.PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                binding.setLoadingLocation(true);
                 getCurrentLocation();
             }else{
                 permissionUtil.showDialog(this,this);
@@ -182,7 +183,7 @@ public class MapsActivity extends FragmentActivity implements
     private void getCurrentLocation(){
 
         if (!mapsActivityVM.isLocationEnabled()){
-            locationBottomSheet.show(getSupportFragmentManager(),"");
+            if (!locationBottomSheet.isAdded())locationBottomSheet.show(getSupportFragmentManager(),"");
             return;
         }
         mapsActivityVM.getLocation().observe(this, latLngResult -> {
@@ -201,7 +202,7 @@ public class MapsActivity extends FragmentActivity implements
                 if (!inCircle&&directionsOn){
                     getDirections();
                 }
-
+                binding.setLoadingLocation(false);
             }else {
                 Toast.makeText(this, "failed to get Location", Toast.LENGTH_SHORT).show();
             }
