@@ -16,9 +16,14 @@ import com.malcoo.malcotask1.databinding.LayoutLocationBottonsheetBinding;
 
 public class LocationBottomSheet extends BottomSheetDialogFragment {
 
+    public static LocationBottomSheet locationBottomSheet;
+    public static LocationBottomSheet getInstance(OnActivateLocationClickedListener onActivateLocationClickedListener) {
+        return locationBottomSheet==null?locationBottomSheet=new LocationBottomSheet(onActivateLocationClickedListener):locationBottomSheet;
+    }
+
     OnActivateLocationClickedListener onActivateLocationClickedListener;
 
-    public LocationBottomSheet(OnActivateLocationClickedListener onActivateLocationClickedListener) {
+    private LocationBottomSheet(OnActivateLocationClickedListener onActivateLocationClickedListener) {
         this.onActivateLocationClickedListener = onActivateLocationClickedListener;
     }
 
@@ -27,10 +32,9 @@ public class LocationBottomSheet extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         LayoutLocationBottonsheetBinding binding= DataBindingUtil
                 .inflate(inflater,R.layout.layout_location_bottonsheet,container,false);
-
+        getDialog().setCancelable(false);
         binding.activateLocation.setOnClickListener(v -> {
             onActivateLocationClickedListener.onActivateLocationClicked();
-            dismiss();
         });
 
         return binding.getRoot();

@@ -60,7 +60,7 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding= DataBindingUtil.inflate(LayoutInflater.from(container.getContext()), R.layout.frag_check_in,container,false);
         logSystem=LogSystem.getInstance(getContext());
-        locationBottomSheet=new LocationBottomSheet(this);
+        locationBottomSheet= LocationBottomSheet.getInstance(this);
 
         checkLocation();
         launcher = registerForActivityResult(
@@ -71,6 +71,8 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
             Log.d(TAG, "status observe: "+status);
             if (status){ // location is off
                 if (locationBottomSheet.isAdded()) locationBottomSheet.dismiss();
+                CameraUtil.lastValue="";
+
             }else {
                 if (!locationBottomSheet.isAdded())locationBottomSheet.show(getChildFragmentManager(),"");
             }
@@ -111,8 +113,6 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
         CameraUtil.getInstance().setOnBarcodeScannedListener(barcode -> {
             Log.d(TAG, "observeQrCode: "+barcode.getRawValue());
             if (!LocationRepo.getInstance(getContext()).isLocationEnabled()){
-                binding.barcodeValue.setText("please enable location ");
-                CameraUtil.lastValue="";
                 return;
             }
             binding.barcodeValue.setText("------");
@@ -167,7 +167,7 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
     @Override
     public void onActivateLocationDismissed() {
         if (!LocationRepo.getInstance(getContext()).isLocationEnabled()){
-            locationBottomSheet.show(getChildFragmentManager(),"");
+            if (!locationBottomSheet.isAdded())locationBottomSheet.show(getChildFragmentManager(),"");
         }
     }
 
@@ -184,5 +184,9 @@ public class CheckInFrag extends Fragment implements LocationBottomSheet.OnActiv
         super.onPause();
         Log.d(TAG, "onPause: ");
         CameraUtil.scannerAlive=false;
+        LocationRepo.getInstance(getContext())
+                .observeLocationStatus()
+                .removeObservers(this);
+
     }
 }

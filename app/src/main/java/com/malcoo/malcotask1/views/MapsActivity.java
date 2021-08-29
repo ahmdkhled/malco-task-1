@@ -70,14 +70,13 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         binding= DataBindingUtil.setContentView(this,R.layout.activity_maps);
         mapsActivityVM=new ViewModelProvider(this).get(MapsActivityVM.class);
-        locationBottomSheet=new LocationBottomSheet(this);
+        locationBottomSheet= LocationBottomSheet.getInstance(this);
         locationReceiver=new LocationReceiver();
         permissionUtil=new PermissionUtil();
         logSystem=LogSystem.getInstance(this);
 
-
-        checkLocation();
         checkConnection();
+
 
         lastcheckInStatus =mapsActivityVM.getLastStatus();
         Log.d(TAG, "status : "+ lastcheckInStatus);
@@ -101,6 +100,12 @@ public class MapsActivity extends FragmentActivity implements
             directionsOn=true;
             getDirections();
         });
+
+        launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                });
+
 
 
         String log=logSystem.logToday();
@@ -146,9 +151,10 @@ public class MapsActivity extends FragmentActivity implements
         LocationRepo.getInstance(this)
                 .observeLocationStatus()
                 .observe(this,enabled->{
+
                     if (enabled){
                         getCurrentLocation();
-                        if (locationBottomSheet.isAdded())locationBottomSheet.show(getSupportFragmentManager(),"");
+                        if (locationBottomSheet.isAdded())locationBottomSheet.dismiss();
                     }else {
                         mapsActivityVM.stopLocationUpdates();
                         if (!locationBottomSheet.isAdded())locationBottomSheet
@@ -157,11 +163,6 @@ public class MapsActivity extends FragmentActivity implements
                     Log.d(TAG, "checkLocation: observe location enabled "+enabled);
                 });
 
-        launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-
-                });
 
     }
 
@@ -235,8 +236,7 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onActivateLocationDismissed() {
         if (!LocationRepo.getInstance(this).isLocationEnabled()){
-            LocationBottomSheet locationBottomSheet=new LocationBottomSheet(this);
-            locationBottomSheet.show(getSupportFragmentManager(),"");
+            if (!locationBottomSheet.isAdded())locationBottomSheet.show(getSupportFragmentManager(),"");
             return;
         }
         getCurrentLocation();
@@ -249,6 +249,8 @@ public class MapsActivity extends FragmentActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        checkLocation();
+
     }
 
     @Override
@@ -257,6 +259,13 @@ public class MapsActivity extends FragmentActivity implements
         registerReceiver(locationReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocationRepo.getInstance(this)
+                .observeLocationStatus()
+                .removeObservers(this);
+    }
 
     @Override
     protected void onDestroy() {
