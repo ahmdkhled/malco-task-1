@@ -153,6 +153,7 @@ public class MapsActivity extends FragmentActivity implements
                 .observe(this,enabled->{
 
                     if (enabled){
+                        mapsActivityVM.firstLocationReq=true;
                         getCurrentLocation();
                         if (locationBottomSheet.isAdded())locationBottomSheet.dismiss();
                     }else {
@@ -172,7 +173,6 @@ public class MapsActivity extends FragmentActivity implements
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PermissionUtil.PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                binding.setLoadingLocation(true);
                 getCurrentLocation();
             }else{
                 permissionUtil.showDialog(this,this);
@@ -185,6 +185,10 @@ public class MapsActivity extends FragmentActivity implements
         if (!mapsActivityVM.isLocationEnabled()){
             if (!locationBottomSheet.isAdded())locationBottomSheet.show(getSupportFragmentManager(),"");
             return;
+        }
+        if (mapsActivityVM.firstLocationReq){
+            binding.setLoadingLocation(true);
+            mapsActivityVM.firstLocationReq=false;
         }
         mapsActivityVM.getLocation().observe(this, latLngResult -> {
             Location location=latLngResult.getData();
