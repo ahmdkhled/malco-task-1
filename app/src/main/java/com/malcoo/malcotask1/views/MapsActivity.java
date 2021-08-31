@@ -70,7 +70,7 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         binding= DataBindingUtil.setContentView(this,R.layout.activity_maps);
         mapsActivityVM=new ViewModelProvider(this).get(MapsActivityVM.class);
-        locationBottomSheet= LocationBottomSheet.getInstance(this);
+        locationBottomSheet= mapsActivityVM.initLocationBottomSheet(this);
         locationReceiver=new LocationReceiver();
         permissionUtil=new PermissionUtil();
         logSystem=LogSystem.getInstance(this);

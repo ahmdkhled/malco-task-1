@@ -11,17 +11,19 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.maps.model.LatLng;
 import com.malcoo.malcotask1.Model.DirectionResponse;
 import com.malcoo.malcotask1.Model.Result;
-import com.malcoo.malcotask1.Repo.CheckInRepo;
 import com.malcoo.malcotask1.Repo.DirectionsRepo;
 import com.malcoo.malcotask1.Repo.LocationRepo;
 import com.malcoo.malcotask1.Utils.LogSystem;
+import com.malcoo.malcotask1.views.LocationBottomSheet;
 
 public class MapsActivityVM extends AndroidViewModel {
 
     public boolean firstLocationReq=true;
+    private LocationBottomSheet locationBottomSheet;
 
     public MapsActivityVM(@NonNull Application application) {
         super(application);
+
     }
 
     public MutableLiveData<Result<Location>> getLocation() {
@@ -47,6 +49,11 @@ public class MapsActivityVM extends AndroidViewModel {
 
     public MutableLiveData<Result<DirectionResponse>> getDirections(Context context, LatLng origin, LatLng dest){
         return DirectionsRepo.getInstance().getDirections(context,origin,dest);
+    }
+
+    public LocationBottomSheet initLocationBottomSheet(LocationBottomSheet.OnActivateLocationClickedListener onActivateLocationClickedListener) {
+        if (locationBottomSheet==null)locationBottomSheet=LocationBottomSheet.getInstance(onActivateLocationClickedListener);
+        return locationBottomSheet;
     }
 
     }

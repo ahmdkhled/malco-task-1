@@ -27,6 +27,9 @@ public class LocationBottomSheet extends BottomSheetDialogFragment {
         this.onActivateLocationClickedListener = onActivateLocationClickedListener;
     }
 
+    public LocationBottomSheet() {
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,12 +44,18 @@ public class LocationBottomSheet extends BottomSheetDialogFragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        dismiss();
+    }
+
+    @Override
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
         onActivateLocationClickedListener.onActivateLocationDismissed();
     }
 
-    interface OnActivateLocationClickedListener{
+    public interface OnActivateLocationClickedListener{
         void onActivateLocationClicked();
         void onActivateLocationDismissed();
     }
